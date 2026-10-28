@@ -1,6 +1,6 @@
 {
   "as_of": "2026-10-28",
-  "observed_metrics_policy": "Local smoke predictions and Phase 3A UI checks are workflow observations, not independent accuracy; third-party figures below are author-reported.",
+  "observed_metrics_policy": "Phase 3B new-model internal-test metrics are local observations on same-source Kaggle images; published-checkpoint in-source diagnostics may be contaminated. Author metrics remain separate.",
   "candidates": [
     {
       "id": "ctibenkana/cassava-disease-classifier",
@@ -22,6 +22,24 @@
       "evaluation_overlap_risk": "Certain dataset-level exposure; local new split is not independent for this checkpoint",
       "source_url": "https://huggingface.co/spaces/ctibenkana/cassava-disease-classifier",
       "file_url": "https://huggingface.co/spaces/ctibenkana/cassava-disease-classifier/tree/main"
+    },
+    {
+      "id": "cassava-imagenet-finetuned-20261028",
+      "crop": "cassava",
+      "status": "local_internal_test_completed; optional_app_model; not_default",
+      "app_config": "configs/cassava_finetuned_app.json",
+      "architecture": "timm mobilenetv3_small_100, 5-output head",
+      "framework": "PyTorch 2.8.0+cu128, timm 1.0.20",
+      "weights": "checkpoints/experiments/full_backbone_smooth_20261028/best.pth; SHA256 7cb54b7de90ec775eb346a0a5ade31dfcdac7fff2e03db5264c1aa8c6fc98cd0",
+      "checkpoint_format": "PyTorch state dictionary inside a dictionary; load with weights_only=True",
+      "class_names": ["Cassava Bacterial Blight (CBB)", "Cassava Brown Streak Disease (CBSD)", "Cassava Green Mottle (CGM)", "Cassava Mosaic Disease (CMD)", "Healthy"],
+      "class_order_verified": true,
+      "training_data": "Frozen Cassava train split, 14978 images; ImageNet pretrained initialization, no disease-specific initialization",
+      "license": "ImageNet pretrained weights card states Apache-2.0; Cassava source-data terms require separate verification",
+      "preprocessing": "RGB; OpenCV INTER_AREA resize to 256x256; center crop 224x224; [0,1]; ImageNet mean/std; float32 NCHW",
+      "observed_internal_test": {"n": 3209, "accuracy": 0.8180118416952321, "macro_f1": 0.7011231770946892, "balanced_accuracy": 0.7038590771568207},
+      "evaluation_overlap_risk": "No exact SHA/group overlap across frozen splits; possible near-duplicate or same-plant exposure remains; no external field validation",
+      "reports": ["reports/12_cassava_finetuning.md", "reports/13_cassava_comparison.md"]
     },
     {
       "id": "Huyt/rice-leaf-disease-efficientnet-b0",

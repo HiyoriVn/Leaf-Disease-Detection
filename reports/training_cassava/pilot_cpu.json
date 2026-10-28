@@ -1,0 +1,114 @@
+{
+  "run_name": "pilot_cpu_20261028",
+  "pilot": true,
+  "seed": 20261028,
+  "device": "cpu",
+  "gpu": null,
+  "torch": "2.8.0+cpu",
+  "timm": "1.0.20",
+  "manifest_sha256": "570b0d52ea950dec13de0eed792614b67c039b08b2cc28c8e588bb87b2f61082",
+  "config": {
+    "version": 1,
+    "seed": 20261028,
+    "architecture": "mobilenetv3_small_100",
+    "pretrained_source": "https://huggingface.co/timm/mobilenetv3_small_100.lamb_in1k",
+    "pretrained_file": "checkpoints/imagenet_mobilenetv3_small_100.safetensors",
+    "input_size": 224,
+    "resize": 256,
+    "interpolation": "INTER_AREA",
+    "normalization": "imagenet",
+    "batch_size_cuda": 16,
+    "batch_size_cpu": 8,
+    "num_workers": 2,
+    "head_epochs": 6,
+    "last_stage_epochs": 4,
+    "head_learning_rate": 0.001,
+    "last_stage_learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "early_stopping_patience": 3,
+    "loss": "weighted",
+    "selection_metric": "validation_macro_f1",
+    "pilot_train_per_class": 64,
+    "pilot_val_per_class": 32
+  },
+  "manifest_counts": {
+    "train": 14978,
+    "val": 3210,
+    "internal_test": 3209
+  },
+  "train_n": 320,
+  "val_n": 160,
+  "train_class_counts": [
+    64,
+    64,
+    64,
+    64,
+    64
+  ],
+  "loss": "weighted",
+  "class_weights": [
+    3.936399459838867,
+    1.9553524255752563,
+    1.7937724590301514,
+    0.3252198398113251,
+    1.6605321168899536
+  ],
+  "batch_size": 8,
+  "pretrained_file_sha256": "46d2c063b18125884c48937afa4c49e18128869e52e8db96df48bf0a4d7ff697",
+  "epochs": [
+    {
+      "epoch": 1,
+      "stage": "head",
+      "train": {
+        "loss": 1.4726131692528726,
+        "accuracy": 0.346875,
+        "macro_f1": 0.2981309309309309,
+        "balanced_accuracy": 0.346875
+      },
+      "val": {
+        "loss": 1.4236285537481308,
+        "accuracy": 0.36875,
+        "macro_f1": 0.31708740014457837,
+        "balanced_accuracy": 0.36875
+      },
+      "elapsed_seconds": 74.99
+    }
+  ],
+  "best_epoch": 1,
+  "best_val_macro_f1": 0.31708740014457837,
+  "pretrained_cfg": {
+    "url": "https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-weights/mobilenetv3_small_100_lamb-266a294c.pth",
+    "hf_hub_id": "timm/mobilenetv3_small_100.lamb_in1k",
+    "architecture": "mobilenetv3_small_100",
+    "tag": "lamb_in1k",
+    "custom_load": false,
+    "input_size": [
+      3,
+      224,
+      224
+    ],
+    "fixed_input_size": false,
+    "interpolation": "bicubic",
+    "crop_pct": 0.875,
+    "crop_mode": "center",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "num_classes": 1000,
+    "pool_size": [
+      7,
+      7
+    ],
+    "first_conv": "conv_stem",
+    "classifier": "classifier"
+  },
+  "duration_seconds": 75.05,
+  "best_checkpoint_sha256": "b9bfa087ab474ca664f92877cf2207e6309ee389cbef8c5710df100d38ce88a2"
+}

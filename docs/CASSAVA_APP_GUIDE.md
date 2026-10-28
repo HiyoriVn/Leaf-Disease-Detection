@@ -29,6 +29,8 @@ Mở [http://127.0.0.1:8501](http://127.0.0.1:8501), chọn **Tải ảnh lên**
 
 Ứng dụng hiển thị lớp dự đoán, xác suất softmax của lớp đó và ba lớp có xác suất cao nhất. Xác suất cao không bảo đảm chẩn đoán đúng. Kết quả chỉ hỗ trợ tham khảo; nên hỏi chuyên gia nông nghiệp trước khi xử lý cây.
 
+Ứng dụng có hai lựa chọn trong **Chọn mô hình Cassava**. Checkpoint công bố là mặc định. Model nhóm fine-tune là tùy chọn thử nghiệm, đã được chấm internal test cùng nguồn Kaggle (accuracy 81,8%, macro-F1 0,701); chưa kiểm định ngoài thực địa. Để dùng tùy chọn này, cần có `checkpoints/experiments/full_backbone_smooth_20261028/best.pth` với SHA-256 trong `configs/cassava_finetuned_app.json`. Không dùng mức confidence để so trực tiếp độ chính xác giữa hai model.
+
 ## Lỗi thường gặp
 
 - **Không tìm thấy checkpoint:** đặt file đúng đường dẫn trên rồi thử lại.

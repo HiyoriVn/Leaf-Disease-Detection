@@ -1,11 +1,13 @@
 # Verification status — 28 October 2026
 
-The target project folder was empty when inspected. No source code, checkpoint files, dataset images, or class mappings were available. The implementation is a runnable integration baseline, but checkpoint loading and scientific evaluation cannot be verified until the original artifacts are supplied.
+The repository now contains the Phase 1–3B data reports, frozen manifests, Cassava app, and reproducible training scripts. Source images remain outside the repository at `C:\Users\Admin\Downloads\data\extracted`; model weights and virtual environments are local and ignored by Git.
 
-| Crop | Checkpoint verified | Labels verified | Dataset evaluated | Metrics |
-|---|---|---|---|---|
-| Rice | No artifact present | No | No | Not available |
-| Coffee | No artifact present | No | No | Not available |
-| Cassava | No artifact present | No | No | Not available |
+| Crop | Checkpoint status | Dataset/scope | Locally observed metrics |
+|---|---|---|---|
+| Cassava | Published MobileNetV3-Small verified; new ImageNet-initialized MobileNetV3-Small trained and tested | 14,978 train / 3,210 val / 3,209 internal test | New model internal test: accuracy 0.8180, macro-F1 0.7011, balanced accuracy 0.7039; same-source Kaggle, no external validation |
+| Rice | No compatible 10-class checkpoint integrated | Frozen manifest; near-duplicate review pending | None |
+| Coffee | No compatible 6-class checkpoint integrated | Frozen plant-group manifest; label disputes pending | None |
 
-Dependencies found in the active Python installation: Python 3.13.3; `torch`, `torchvision`, and `streamlit` are not installed. The declared stack targets Python 3.10–3.12 because a compatible PyTorch wheel is required. Install dependencies in a supported environment before launching the UI. No metrics in this project are published claims or locally measured results.
+The Cassava Streamlit app defaults to the published checkpoint and offers the new model as an experimental option. The published checkpoint's 3,210-image validation diagnostic (accuracy 0.8458, macro-F1 0.7688) may be contaminated because it trained on the same Kaggle source. Do not compare it with the new model's internal test as if both were independent field evaluations.
+
+See `reports/11_cassava_baseline_evaluation.md`, `reports/12_cassava_finetuning.md`, and `reports/13_cassava_comparison.md`. The 85% internal-test accuracy target was not reached. A separately sourced, expert-labeled field test remains necessary to assess real-world performance.

@@ -1,0 +1,100 @@
+{
+  "n": 500,
+  "accuracy": 0.852,
+  "macro_f1": 0.7897568257617131,
+  "balanced_accuracy": 0.8073730583142348,
+  "per_class": [
+    {
+      "index": 0,
+      "class_name": "Cassava Bacterial Blight (CBB)",
+      "support": 25,
+      "precision": 0.8260869565217391,
+      "recall": 0.76,
+      "f1": 0.7916666666666667
+    },
+    {
+      "index": 1,
+      "class_name": "Cassava Brown Streak Disease (CBSD)",
+      "support": 51,
+      "precision": 0.7321428571428571,
+      "recall": 0.803921568627451,
+      "f1": 0.766355140186916
+    },
+    {
+      "index": 2,
+      "class_name": "Cassava Green Mottle (CGM)",
+      "support": 56,
+      "precision": 0.7924528301886793,
+      "recall": 0.75,
+      "f1": 0.7706422018348623
+    },
+    {
+      "index": 3,
+      "class_name": "Cassava Mosaic Disease (CMD)",
+      "support": 308,
+      "precision": 0.9647887323943662,
+      "recall": 0.8896103896103896,
+      "f1": 0.9256756756756757
+    },
+    {
+      "index": 4,
+      "class_name": "Healthy",
+      "support": 60,
+      "precision": 0.5952380952380952,
+      "recall": 0.8333333333333334,
+      "f1": 0.6944444444444444
+    }
+  ],
+  "confusion_matrix": [
+    [
+      19,
+      1,
+      0,
+      0,
+      5
+    ],
+    [
+      0,
+      41,
+      2,
+      4,
+      4
+    ],
+    [
+      0,
+      0,
+      42,
+      6,
+      8
+    ],
+    [
+      2,
+      8,
+      7,
+      274,
+      17
+    ],
+    [
+      2,
+      6,
+      2,
+      0,
+      50
+    ]
+  ],
+  "matrix_orientation": "rows=true, columns=predicted",
+  "scope": "diagnostic in-source subset; published checkpoint trained on same Kaggle source; potentially contaminated",
+  "split": "val",
+  "requested_limit": 500,
+  "seed": 20261028,
+  "duration_seconds": 21.08,
+  "manifest_sha256": "570b0d52ea950dec13de0eed792614b67c039b08b2cc28c8e588bb87b2f61082",
+  "checkpoint_sha256": "4043a480d7a48d636f4feefbe31df4c52eeadd8edb8404d31319eddd807ac4bb",
+  "class_names": [
+    "Cassava Bacterial Blight (CBB)",
+    "Cassava Brown Streak Disease (CBSD)",
+    "Cassava Green Mottle (CGM)",
+    "Cassava Mosaic Disease (CMD)",
+    "Healthy"
+  ]
+}

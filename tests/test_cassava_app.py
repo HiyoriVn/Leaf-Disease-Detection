@@ -93,3 +93,18 @@ def test_real_checkpoint_matches_phase2_smoke_predictions():
         result = predict_image(image, model, config)
         assert result["predicted_label"] == row["predicted_label"]
         assert result["confidence"] == pytest.approx(float(row["confidence"]), abs=1e-5)
+
+
+def test_finetuned_checkpoint_cpu_compatibility():
+    path = Path("configs/cassava_finetuned_app.json")
+    if not path.is_file():
+        pytest.skip("fine-tuned app config unavailable")
+    config = load_config(path)
+    if not config.checkpoint.is_file():
+        pytest.skip("fine-tuned checkpoint unavailable")
+    model = load_cassava_model(config)
+    result = predict_image(decode_image(image_bytes(), config), model, config)
+    assert result["input_shape"] == [1, 3, 224, 224]
+    assert result["output_shape"] == [1, 5]
+    assert result["predicted_label"] in config.class_names
+    assert sum(result["probabilities"]) == pytest.approx(1.0, abs=1e-6)

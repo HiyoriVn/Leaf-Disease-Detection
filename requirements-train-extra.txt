@@ -1,0 +1,6 @@
+# Install PyTorch 2.8.0 + CUDA 12.8 separately from the official PyTorch index.
+timm==1.0.20
+opencv-python-headless==4.12.0.88
+PyYAML==6.0.3
+safetensors==0.8.0
+numpy==2.2.6

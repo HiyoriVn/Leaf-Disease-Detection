@@ -8,5 +8,7 @@ __pycache__/
 
 # Local inference environment and downloaded model weights
 .venv-phase2/
+.venv-train/
 checkpoints/
 .tmp-phase2/
+.tmp-train/
