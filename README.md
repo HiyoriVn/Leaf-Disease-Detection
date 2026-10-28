@@ -1,6 +1,29 @@
 # Plant Disease Classification Capstone
 
-Streamlit inference and evaluation scaffold for rice, coffee, and cassava leaf disease classifiers. This checkout was found empty: no checkpoints, class mappings, training code, or labeled datasets were present. The application therefore refuses to invent models or metrics and reports missing artifacts clearly.
+Streamlit inference and evaluation scaffold for rice, coffee, and cassava leaf disease classifiers. The source images are stored outside this repository at `C:\Users\Admin\Downloads\data\extracted`. Phase 1 audited the archives and images; Phase 2 created manifests and ran a technical smoke test on one published cassava checkpoint. The app still requires **TorchScript** checkpoints and populated `models/manifest.json`; the published checkpoint downloaded for Phase 2 is a PyTorch state dictionary and is not wired into the app.
+
+## Phase 2 artifacts
+
+- [Model feasibility](reports/07_model_feasibility.md), [preprocessing protocol](reports/08_preprocessing_protocol.md), and [experiment design](reports/09_experiment_design.md).
+- `configs/model_registry.json` records candidate architectures, label contracts, licenses, and overlap risks.
+- `configs/dataset_config.yaml` fixes data root, seed, split fractions, and pHash thresholds. Edit `data_root` on another machine.
+- `manifests/{rice,cassava,coffee}.csv` list image paths and SHA-256 without copying images. Coffee dispute and exact-duplicate queues, and rice pHash candidates, are also in `manifests/`.
+- `reports/smoke_cassava/` contains five predictions and a JSON log from a real checkpoint inference. These are **not** independent evaluation metrics.
+
+To reproduce the manifests after editing the config:
+
+```powershell
+python scripts/prepare_manifests.py --config configs/dataset_config.yaml
+python scripts/find_near_duplicates.py --config configs/dataset_config.yaml --dataset rice --apply-groups
+```
+
+For the optional cassava smoke test, create a separate Python 3.13 virtual environment and install `torch==2.8.0`, `torchvision==0.23.0`, `timm==1.0.20`, and `opencv-python-headless==4.12.0.88`. Download `mobilenetv3_best.pth` from the [author's Space](https://huggingface.co/spaces/ctibenkana/cassava-disease-classifier/tree/main) into `checkpoints/cassava_mobilenetv3_best.pth`, then run:
+
+```powershell
+.\.venv-phase2\Scripts\python.exe scripts\smoke_test_cassava.py --checkpoint checkpoints\cassava_mobilenetv3_best.pth --manifest manifests\cassava.csv --data-root 'C:\Users\Admin\Downloads\data\extracted' --output-dir reports\smoke_cassava
+```
+
+The author used older library versions; the local smoke log records the versions actually run. `checkpoints/` and `.venv-phase2/` are ignored by Git.
 
 ## Quick start
 
@@ -22,4 +45,4 @@ No metric is reported until evaluation actually runs on labeled data. Published 
 
 ## Important
 
-The supplied folder contained no model checkpoints or datasets. This repository does not include pretrained weights. Add the original project artifacts before claiming model verification or scientific performance. See `docs/STATUS.md`.
+This repository does not commit source images or model weights. The Phase 2 cassava checkpoint was tested only for loading and inference, and the three manifests contain internally derived splits. No Phase 3 fine-tuning or scientific evaluation has run. See `reports/07_model_feasibility.md` and `docs/STATUS.md` for scope.
