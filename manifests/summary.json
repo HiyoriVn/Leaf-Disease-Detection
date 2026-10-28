@@ -1,0 +1,20 @@
+{
+  "rice": {
+    "internal_test": 972,
+    "train": 4766,
+    "val": 973,
+    "excluded": 1
+  },
+  "cassava": {
+    "train": 14978,
+    "val": 3210,
+    "internal_test": 3209,
+    "unlabeled": 1
+  },
+  "coffee": {
+    "internal_test": 198,
+    "train": 1060,
+    "excluded": 102,
+    "val": 200
+  }
+}

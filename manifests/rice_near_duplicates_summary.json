@@ -1,0 +1,17 @@
+{
+  "dataset": "rice",
+  "method": "64-bit DCT pHash",
+  "max_distance": 6,
+  "candidate_pairs": 1344,
+  "rows_written": 1344,
+  "group_max_distance": 6,
+  "grouped_pairs": 1344,
+  "cross_label_pairs": 411,
+  "action": "candidate_connected_groups_kept_in_same_split; no exclusions added",
+  "split_counts": {
+    "internal_test": 972,
+    "train": 4766,
+    "val": 973,
+    "excluded": 1
+  }
+}
