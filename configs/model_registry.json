@@ -1,11 +1,13 @@
 {
   "as_of": "2026-10-28",
-  "observed_metrics_policy": "Only reports/smoke_test_cassava.json may contain local observations; third-party figures below are author-reported.",
+  "observed_metrics_policy": "Local smoke predictions and Phase 3A UI checks are workflow observations, not independent accuracy; third-party figures below are author-reported.",
   "candidates": [
     {
       "id": "ctibenkana/cassava-disease-classifier",
       "crop": "cassava",
-      "status": "local_smoke_test_passed; metrics_not_independent",
+      "status": "phase3a_app_inference_passed; metrics_not_independent",
+      "app_config": "configs/cassava_app.json",
+      "app_report": "reports/10_phase3a_implementation.md",
       "architecture": "timm mobilenetv3_small_100, 5-output head",
       "framework": "PyTorch 2.4.1, timm 1.0.11 (publisher requirements)",
       "weights": "mobilenetv3_best.pth, 6224097 bytes, local SHA256 4043a480d7a48d636f4feefbe31df4c52eeadd8edb8404d31319eddd807ac4bb",
