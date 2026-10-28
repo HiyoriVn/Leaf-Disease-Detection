@@ -1,0 +1,6 @@
+image_path,manifest_label,predicted_index,predicted_label,confidence,inference_ms,input_shape,output_shape
+cassava-leaf-disease-classification/train_images/1000015157.jpg,Cassava Bacterial Blight (CBB),0,Cassava Bacterial Blight (CBB),0.3092735707759857,45.417,"(1, 3, 224, 224)","(1, 5)"
+cassava-leaf-disease-classification/train_images/100042118.jpg,Cassava Brown Streak Disease (CBSD),4,Healthy,0.5195497870445251,18.211,"(1, 3, 224, 224)","(1, 5)"
+cassava-leaf-disease-classification/train_images/1003218714.jpg,Cassava Green Mottle (CGM),3,Cassava Mosaic Disease (CMD),0.7228158116340637,23.387,"(1, 3, 224, 224)","(1, 5)"
+cassava-leaf-disease-classification/train_images/1000201771.jpg,Cassava Mosaic Disease (CMD),3,Cassava Mosaic Disease (CMD),0.6190788149833679,29.161,"(1, 3, 224, 224)","(1, 5)"
+cassava-leaf-disease-classification/train_images/1001723730.jpg,Healthy,0,Cassava Bacterial Blight (CBB),0.8242764472961426,35.377,"(1, 3, 224, 224)","(1, 5)"
