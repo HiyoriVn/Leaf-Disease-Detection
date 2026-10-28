@@ -1,0 +1,7 @@
+# Bộ nhớ đệm của Python
+__pycache__/
+*.pyc
+
+# Bộ nhớ đệm khi chạy test
+.pytest_cache/
+.pytest-tmp/
