@@ -1,0 +1,19 @@
+version: 1
+data_root: C:/Users/Admin/Downloads/data/extracted
+seed: 20261028
+split_fractions:
+  train: 0.70
+  val: 0.15
+  internal_test: 0.15
+source_profile: reports/dataset_profile.json
+manifest_dir: manifests
+rice_near_duplicate:
+  method: phash_64_dct
+  max_hamming_distance: 6
+  max_pairs_reported: 5000
+  group_max_hamming_distance: 6
+  action: review_only
+notes:
+  - Splits are derived and are not independent for checkpoints trained on the same datasets.
+  - Coffee uses plant groups connected by exact-image duplicates.
+  - Dataset images and archives remain unchanged.

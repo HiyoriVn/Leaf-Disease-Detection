@@ -5,3 +5,8 @@ __pycache__/
 # Bộ nhớ đệm khi chạy test
 .pytest_cache/
 .pytest-tmp/
+
+# Local inference environment and downloaded model weights
+.venv-phase2/
+checkpoints/
+.tmp-phase2/
