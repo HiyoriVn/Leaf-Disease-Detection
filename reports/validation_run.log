@@ -1,0 +1,128 @@
+A Rice Leaf Disease Image Dataset for Multi-Class: decoded 5000/6712
+cassava-leaf-disease-classification: decoded 5000/21398
+cassava-leaf-disease-classification: decoded 10000/21398
+cassava-leaf-disease-classification: decoded 15000/21398
+cassava-leaf-disease-classification: decoded 20000/21398
+{
+  "A Rice Leaf Disease Image Dataset for Multi-Class": {
+    "pixel_decode": {
+      "checked": 6712,
+      "error_count": 0,
+      "errors": []
+    },
+    "kind": "folder_labels",
+    "class_counts": {
+      "bacterial_leaf_blight": 785,
+      "brown_spot": 761,
+      "Healthy": 753,
+      "leaf_blast": 521,
+      "leaf_scald": 514,
+      "narrow_brown_spot": 767,
+      "neck_blast": 677,
+      "rice_hispa": 770,
+      "sheath_blight": 608,
+      "tungro": 556
+    },
+    "splits_present": false
+  },
+  "cassava-leaf-disease-classification": {
+    "pixel_decode": {
+      "checked": 21398,
+      "error_count": 0,
+      "errors": []
+    },
+    "kind": "cassava",
+    "train_rows": 21397,
+    "train_images": 21397,
+    "labels": {
+      "0": 1087,
+      "3": 13158,
+      "1": 2189,
+      "2": 2386,
+      "4": 2577
+    },
+    "mapping": {
+      "0": "Cassava Bacterial Blight (CBB)",
+      "1": "Cassava Brown Streak Disease (CBSD)",
+      "2": "Cassava Green Mottle (CGM)",
+      "3": "Cassava Mosaic Disease (CMD)",
+      "4": "Healthy"
+    },
+    "missing_images": [],
+    "unlabeled_images": [],
+    "duplicate_image_ids": 0,
+    "unknown_labels": [],
+    "test_images": 1,
+    "train_tfrecords": 16
+  },
+  "RoCoLe A robusta coffee leaf images dataset": {
+    "pixel_decode": {
+      "checked": 1560,
+      "error_count": 0,
+      "errors": []
+    },
+    "kind": "coffee",
+    "annotation_rows": 1560,
+    "photos": 1560,
+    "classification_counts": {
+      "healthy": 791,
+      "rust_level_2": 166,
+      "rust_level_3": 62,
+      "rust_level_1": 344,
+      "red_spider_mite": 167,
+      "rust_level_4": 30
+    },
+    "state_counts": {
+      "healthy": 791,
+      "unhealthy": 769
+    },
+    "state_class_disagreements": 8,
+    "disagreement_examples": [
+      {
+        "image": "C1P5E1.jpg",
+        "classification": "healthy",
+        "state": "unhealthy"
+      },
+      {
+        "image": "C4P39H2.jpg",
+        "classification": "rust_level_2",
+        "state": "healthy"
+      },
+      {
+        "image": "C1P31E2.jpg",
+        "classification": "rust_level_1",
+        "state": "healthy"
+      },
+      {
+        "image": "C2P28E2.jpg",
+        "classification": "healthy",
+        "state": "unhealthy"
+      },
+      {
+        "image": "C5P31H1.jpg",
+        "classification": "healthy",
+        "state": "unhealthy"
+      },
+      {
+        "image": "C7P23H2.jpg",
+        "classification": "healthy",
+        "state": "unhealthy"
+      },
+      {
+        "image": "C9P34E1.jpg",
+        "classification": "rust_level_2",
+        "state": "healthy"
+      },
+      {
+        "image": "C11P8H2.jpg",
+        "classification": "rust_level_2",
+        "state": "healthy"
+      }
+    ],
+    "missing_photos": [],
+    "unannotated_photos": [],
+    "duplicate_external_ids": 0,
+    "filename_plant_groups": 390,
+    "groups_with_both_classes": 379
+  }
+}

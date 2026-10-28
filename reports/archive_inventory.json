@@ -1,0 +1,334 @@
+{
+  "data_root": "C:\\Users\\Admin\\Downloads\\data",
+  "free_bytes": 20678467584,
+  "archives": [
+    {
+      "archive": "C:\\Users\\Admin\\Downloads\\data\\A Rice Leaf Disease Image Dataset for Multi-Class.zip",
+      "archive_bytes": 2059663467,
+      "format": "ZIP",
+      "files": 6712,
+      "directory_entries": 0,
+      "uncompressed_bytes": 2142647017,
+      "compressed_entry_bytes": 2057951687,
+      "ratio": 1.04,
+      "extensions": {
+        ".jpg": 6709,
+        ".jpeg": 2,
+        ".png": 1
+      },
+      "roots": {
+        "A Rice Leaf Disease Image Dataset for Multi-Class": 6712
+      },
+      "unsafe": [],
+      "unsafe_count": 0,
+      "duplicate_paths": [],
+      "duplicate_count": 0,
+      "largest": [
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (63).jpg",
+          "bytes": 6380782
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (89).jpg",
+          "bytes": 6335389
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (59).jpg",
+          "bytes": 6045281
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (62).jpg",
+          "bytes": 5809031
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (64).jpg",
+          "bytes": 5596830
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (98).jpg",
+          "bytes": 5484509
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (65).jpg",
+          "bytes": 5285426
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (66).jpg",
+          "bytes": 5071197
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (58).jpg",
+          "bytes": 5002646
+        },
+        {
+          "path": "A Rice Leaf Disease Image Dataset for Multi-Class/Healthy/Healthy_rice_leaf (171).jpg",
+          "bytes": 4987350
+        }
+      ],
+      "metadata_candidates": [],
+      "sample_paths": [
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1094.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1058.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1055.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight101.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight10.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1076.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight (37).JPG",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1166.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1167.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1190.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1191.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1276.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1039.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1016.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1343.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1347.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1301.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1215.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1369.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1354.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight138.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight16.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1372.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight1378.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight163.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight19.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight161.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight200.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight190.jpg",
+        "A Rice Leaf Disease Image Dataset for Multi-Class/bacterial_leaf_blight/bacterial_leaf_blight238.jpg"
+      ],
+      "extraction": {
+        "destination": "C:\\Users\\Admin\\Downloads\\data\\extracted\\A Rice Leaf Disease Image Dataset for Multi-Class",
+        "files": 6712,
+        "bytes": 2142647017,
+        "status": "complete"
+      }
+    },
+    {
+      "archive": "C:\\Users\\Admin\\Downloads\\data\\cassava-leaf-disease-classification.zip",
+      "archive_bytes": 6185662420,
+      "format": "ZIP",
+      "files": 21418,
+      "directory_entries": 0,
+      "uncompressed_bytes": 6185151170,
+      "compressed_entry_bytes": 6182031876,
+      "ratio": 1.0,
+      "extensions": {
+        ".jpg": 21398,
+        ".tfrec": 17,
+        ".csv": 2,
+        ".json": 1
+      },
+      "roots": {
+        "train_images": 21397,
+        "train_tfrecords": 16,
+        "label_num_to_disease_map.json": 1,
+        "sample_submission.csv": 1,
+        "test_images": 1,
+        "test_tfrecords": 1,
+        "train.csv": 1
+      },
+      "unsafe": [],
+      "unsafe_count": 0,
+      "duplicate_paths": [],
+      "duplicate_count": 0,
+      "largest": [
+        {
+          "path": "train_tfrecords/ld_train11-1338.tfrec",
+          "bytes": 228471836
+        },
+        {
+          "path": "train_tfrecords/ld_train13-1338.tfrec",
+          "bytes": 227689858
+        },
+        {
+          "path": "train_tfrecords/ld_train00-1338.tfrec",
+          "bytes": 227505337
+        },
+        {
+          "path": "train_tfrecords/ld_train10-1338.tfrec",
+          "bytes": 227408770
+        },
+        {
+          "path": "train_tfrecords/ld_train08-1338.tfrec",
+          "bytes": 227215674
+        },
+        {
+          "path": "train_tfrecords/ld_train03-1338.tfrec",
+          "bytes": 227149782
+        },
+        {
+          "path": "train_tfrecords/ld_train09-1338.tfrec",
+          "bytes": 227035525
+        },
+        {
+          "path": "train_tfrecords/ld_train02-1338.tfrec",
+          "bytes": 226962196
+        },
+        {
+          "path": "train_tfrecords/ld_train04-1338.tfrec",
+          "bytes": 226770770
+        },
+        {
+          "path": "train_tfrecords/ld_train07-1338.tfrec",
+          "bytes": 226292660
+        }
+      ],
+      "metadata_candidates": [
+        "label_num_to_disease_map.json",
+        "sample_submission.csv",
+        "train.csv"
+      ],
+      "sample_paths": [
+        "label_num_to_disease_map.json",
+        "sample_submission.csv",
+        "test_images/2216849948.jpg",
+        "test_tfrecords/ld_test00-1.tfrec",
+        "train.csv",
+        "train_images/1000015157.jpg",
+        "train_images/1000201771.jpg",
+        "train_images/100042118.jpg",
+        "train_images/1000723321.jpg",
+        "train_images/1000812911.jpg",
+        "train_images/1000837476.jpg",
+        "train_images/1000910826.jpg",
+        "train_images/1001320321.jpg",
+        "train_images/1001723730.jpg",
+        "train_images/1001742395.jpg",
+        "train_images/1001749118.jpg",
+        "train_images/100204014.jpg",
+        "train_images/1002088496.jpg",
+        "train_images/1002255315.jpg",
+        "train_images/1002394761.jpg",
+        "train_images/1003218714.jpg",
+        "train_images/1003298598.jpg",
+        "train_images/1003442061.jpg",
+        "train_images/1003888281.jpg",
+        "train_images/1003987001.jpg",
+        "train_images/1004105566.jpg",
+        "train_images/1004163647.jpg",
+        "train_images/1004389140.jpg",
+        "train_images/1004672608.jpg",
+        "train_images/100472565.jpg"
+      ],
+      "extraction": {
+        "destination": "C:\\Users\\Admin\\Downloads\\data\\extracted\\cassava-leaf-disease-classification",
+        "files": 21418,
+        "bytes": 6185151170,
+        "status": "complete"
+      }
+    },
+    {
+      "archive": "C:\\Users\\Admin\\Downloads\\data\\RoCoLe A robusta coffee leaf images dataset.zip",
+      "archive_bytes": 2245588288,
+      "format": "ZIP",
+      "files": 1565,
+      "directory_entries": 0,
+      "uncompressed_bytes": 2270913636,
+      "compressed_entry_bytes": 2245250042,
+      "ratio": 1.01,
+      "extensions": {
+        ".jpg": 1560,
+        ".json": 2,
+        ".csv": 1,
+        ".gz": 1,
+        ".xlsx": 1
+      },
+      "roots": {
+        "RoCoLe A robusta coffee leaf images dataset": 1565
+      },
+      "unsafe": [],
+      "unsafe_count": 0,
+      "duplicate_paths": [],
+      "duplicate_count": 0,
+      "largest": [
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLe-voc.tar.gz",
+          "bytes": 697591506
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C2P27H1.jpg",
+          "bytes": 6637746
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C2P23E1.jpg",
+          "bytes": 5927861
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C2P6H1.jpg",
+          "bytes": 5180569
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C3P16E1.jpg",
+          "bytes": 5054404
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C3P28E1.jpg",
+          "bytes": 5024725
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C2P16E2.jpg",
+          "bytes": 4980354
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C2P11H2.jpg",
+          "bytes": 4942803
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C3P5E1.jpg",
+          "bytes": 4816426
+        },
+        {
+          "path": "RoCoLe A robusta coffee leaf images dataset/Photos/C3P39E1.jpg",
+          "bytes": 4813313
+        }
+      ],
+      "metadata_candidates": [
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLE-coco.json",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLE-csv.csv",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLE-json.json",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLe-classes.xlsx"
+      ],
+      "sample_paths": [
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLE-coco.json",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLE-csv.csv",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLE-json.json",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLe-voc.tar.gz",
+        "RoCoLe A robusta coffee leaf images dataset/Annotations/RoCoLe-classes.xlsx",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P1H1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P1E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P1E1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P1H2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P2H1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P2H2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P3E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P3H1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P2E1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P2E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P4E1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P3H2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P3E1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P5E1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P4H2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P4E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P4H1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P5H2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P6E1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P6E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P6H2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P5E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P5H1.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P7E2.jpg",
+        "RoCoLe A robusta coffee leaf images dataset/Photos/C1P6H1.jpg"
+      ],
+      "extraction": {
+        "destination": "C:\\Users\\Admin\\Downloads\\data\\extracted\\RoCoLe A robusta coffee leaf images dataset",
+        "files": 1565,
+        "bytes": 2270913636,
+        "status": "complete"
+      }
+    }
+  ],
+  "free_bytes_before_run": 31090683904
+}
