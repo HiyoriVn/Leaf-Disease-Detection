@@ -60,6 +60,8 @@ python -m pip install -r requirements-train-extra.txt
 
 Script huấn luyện chỉ đọc ảnh train/validation. Không chạy `scripts/evaluate_cassava_new.py` lặp lại trên test để thử hyperparameter; lần đánh giá đã hoàn tất nằm trong `reports/cassava_internal_test_20261028/`.
 
+Để chạy độc lập trên PC Windows NVIDIA, xem [hướng dẫn chuyển repo/dataset, cài CUDA, logging và resume](docs/WINDOWS_GPU_TRAINING.md). PowerShell helpers: `scripts/setup_train.ps1`, `scripts/prepare_training_bundle.ps1`, `scripts/run_train.ps1`.
+
 ## CropNet (Phase 3C, optional)
 
 Google CropNet is available as a separate **exploratory** six-class option in the Cassava Streamlit app when `.venv-cropnet` and `checkpoints/cropnet` exist. Its `CGM` output means **Cassava Green Mite**; the local Kaggle 2020 label means **Cassava Green Mottle**. They have not been mapped to each other, so no local five-class accuracy is claimed. The two PyTorch choices and default remain unchanged. See [the evaluation report](reports/14_cropnet_evaluation.md).

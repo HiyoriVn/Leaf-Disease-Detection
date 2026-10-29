@@ -163,6 +163,8 @@ def main():
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--data-root", type=Path, help="Override Windows path in dataset_config.yaml (for Kaggle/Colab)")
     parser.add_argument("--manifest", type=Path, default=ROOT / "manifests" / "cassava.csv")
+    parser.add_argument("--output-dir", type=Path, help="Run directory (default: checkpoints/experiments/<run-name>)")
+    parser.add_argument("--resume", action="store_true", help="Resume from last.pth in the run directory")
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--loss", choices=("standard", "weighted"))
     parser.add_argument("--head-epochs", type=int)
@@ -193,10 +195,13 @@ def main():
     if args.pilot:
         train_rows = balanced_pilot(train_rows, int(config["pilot_train_per_class"]), seed)
         val_rows = balanced_pilot(val_rows, int(config["pilot_val_per_class"]), seed + 1)
-    run_dir = ROOT / "checkpoints" / "experiments" / args.run_name
-    if run_dir.exists() and any(run_dir.iterdir()):
+    run_dir = args.output_dir or (ROOT / "checkpoints" / "experiments" / args.run_name)
+    run_dir = run_dir.resolve()
+    if run_dir.exists() and any(run_dir.iterdir()) and not args.resume:
         raise FileExistsError(f"run directory not empty: {run_dir}")
     run_dir.mkdir(parents=True, exist_ok=True)
+    if args.resume and not (run_dir / "last.pth").is_file():
+        raise FileNotFoundError(f"Resume checkpoint missing: {run_dir / 'last.pth'}")
     batch_size = int(config["batch_size_cuda"] if device.type == "cuda" else config["batch_size_cpu"])
     generator = torch.Generator().manual_seed(seed)
     loader_args = {"batch_size": batch_size, "num_workers": int(config["num_workers"]),
@@ -244,19 +249,41 @@ def main():
                 "best_val_macro_f1": -1.0, "pretrained_cfg": model.pretrained_cfg}
     started = time.perf_counter()
     epoch = 0
-    for stage, n_epochs, lr in (("head", head_epochs, config["head_learning_rate"]),
-                                (args.fine_stage, last_epochs, args.fine_lr or config["last_stage_learning_rate"])):
+    resume_state = None
+    if args.resume:
+        resume_state = torch.load(run_dir / "last.pth", map_location="cpu", weights_only=False)
+        if resume_state["manifest_sha256"] != hash_file(manifest_path) or resume_state["pretrained_sha256"] != pretrained_hash:
+            raise ValueError("Resume manifest or ImageNet weights differ from the original run")
+        model.load_state_dict(resume_state["model_state"], strict=True)
+        run_info = resume_state["run_info"]
+        epoch = int(resume_state["epoch"])
+        random.setstate(resume_state["python_rng"])
+        np.random.set_state(resume_state["numpy_rng"])
+        torch.set_rng_state(resume_state["torch_rng"])
+        if torch.cuda.is_available() and resume_state.get("cuda_rng"):
+            torch.cuda.set_rng_state_all(resume_state["cuda_rng"])
+    stages = (("head", head_epochs, config["head_learning_rate"]),
+              (args.fine_stage, last_epochs, args.fine_lr or config["last_stage_learning_rate"]))
+    start_stage = int(resume_state["stage_index"]) if resume_state else 0
+    for stage_index, (stage, n_epochs, lr) in enumerate(stages):
+        if stage_index < start_stage:
+            continue
         if n_epochs <= 0:
             continue
-        if stage != "head":
+        if stage != "head" and not (resume_state and stage_index == start_stage):
             best_state = torch.load(run_dir / "best.pth", map_location="cpu", weights_only=True)
             model.load_state_dict(best_state["model_state"], strict=True)
         set_trainable(model, stage)
         optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad),
                                        lr=float(lr), weight_decay=float(config["weight_decay"]))
         scaler = torch.amp.GradScaler("cuda") if device.type == "cuda" else None
-        stale = 0
-        for _ in range(n_epochs):
+        stale = int(resume_state["stale"]) if resume_state and stage_index == start_stage else 0
+        if resume_state and stage_index == start_stage:
+            optimizer.load_state_dict(resume_state["optimizer_state"])
+            if scaler is not None and resume_state.get("scaler_state"):
+                scaler.load_state_dict(resume_state["scaler_state"])
+        first_epoch = int(resume_state["epoch_in_stage"]) if resume_state and stage_index == start_stage else 0
+        for epoch_in_stage in range(first_epoch, n_epochs):
             epoch += 1
             train_metrics = run_epoch(model, train_loader, device, criterion, optimizer, scaler)
             val_metrics = run_epoch(model, val_loader, device, criterion)
@@ -264,6 +291,7 @@ def main():
                       "elapsed_seconds": round(time.perf_counter() - started, 2)}
             run_info["epochs"].append(record)
             print(json.dumps(record), flush=True)
+            (run_dir / "epochs.jsonl").open("a", encoding="utf-8").write(json.dumps(record, ensure_ascii=False) + "\n")
             if val_metrics["macro_f1"] > run_info["best_val_macro_f1"] + 1e-6:
                 run_info["best_epoch"] = epoch
                 run_info["best_val_macro_f1"] = val_metrics["macro_f1"]
@@ -277,8 +305,18 @@ def main():
             else:
                 stale += 1
             (run_dir / "run.json").write_text(json.dumps(run_info, ensure_ascii=False, indent=2), encoding="utf-8")
+            torch.save({"model_state": model.state_dict(), "optimizer_state": optimizer.state_dict(),
+                        "scaler_state": scaler.state_dict() if scaler is not None else None,
+                        "run_info": run_info, "epoch": epoch, "stage_index": stage_index,
+                        "epoch_in_stage": epoch_in_stage + 1, "stale": stale,
+                        "manifest_sha256": hash_file(manifest_path), "pretrained_sha256": pretrained_hash,
+                        "python_rng": random.getstate(), "numpy_rng": np.random.get_state(),
+                        "torch_rng": torch.get_rng_state(),
+                        "cuda_rng": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None},
+                       run_dir / "last.pth")
             if stale >= int(config["early_stopping_patience"]):
                 break
+        resume_state = None
     run_info["duration_seconds"] = round(time.perf_counter() - started, 2)
     run_info["best_checkpoint_sha256"] = hash_file(run_dir / "best.pth")
     if device.type == "cuda":
