@@ -1,0 +1,13 @@
+{
+  "method": "weighted arithmetic mean of class probabilities",
+  "weights": [
+    0.5,
+    0.5
+  ],
+  "inputs": [
+    ".tmp-phase3e-final\\phase3e_validation_retry1\\v2\\predictions.csv",
+    ".tmp-phase3e-final\\phase3e_validation_retry1\\v3\\predictions.csv"
+  ],
+  "n": 3210,
+  "scope": "fixed validation split; not independent test"
+}

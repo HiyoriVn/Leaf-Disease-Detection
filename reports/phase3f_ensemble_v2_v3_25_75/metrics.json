@@ -1,0 +1,88 @@
+{
+  "n": 3210,
+  "correct": 2668,
+  "accuracy": 0.8311526479750779,
+  "macro_f1": 0.7072252778569119,
+  "balanced_accuracy": 0.7085383956127871,
+  "per_class": [
+    {
+      "class_name": "Cassava Bacterial Blight (CBB)",
+      "support": 163,
+      "precision": 0.5125628140703518,
+      "recall": 0.6257668711656442,
+      "f1": 0.56353591160221
+    },
+    {
+      "class_name": "Cassava Brown Streak Disease (CBSD)",
+      "support": 328,
+      "precision": 0.7377622377622378,
+      "recall": 0.6432926829268293,
+      "f1": 0.6872964169381108
+    },
+    {
+      "class_name": "Cassava Green Mottle (CGM)",
+      "support": 358,
+      "precision": 0.7430340557275542,
+      "recall": 0.6703910614525139,
+      "f1": 0.7048458149779736
+    },
+    {
+      "class_name": "Cassava Mosaic Disease (CMD)",
+      "support": 1974,
+      "precision": 0.9327646763672856,
+      "recall": 0.9417426545086119,
+      "f1": 0.9372321653642551
+    },
+    {
+      "class_name": "Healthy",
+      "support": 387,
+      "precision": 0.6259168704156479,
+      "recall": 0.661498708010336,
+      "f1": 0.6432160804020102
+    }
+  ],
+  "confusion_matrix": [
+    [
+      102,
+      8,
+      4,
+      6,
+      43
+    ],
+    [
+      38,
+      211,
+      9,
+      32,
+      38
+    ],
+    [
+      3,
+      19,
+      240,
+      57,
+      39
+    ],
+    [
+      16,
+      26,
+      40,
+      1859,
+      33
+    ],
+    [
+      40,
+      22,
+      30,
+      39,
+      256
+    ]
+  ],
+  "model_id": "v2_v3_25_75",
+  "split": "val",
+  "scope": "fixed Cassava validation; not independent test",
+  "probability_averaging_inputs": [
+    ".tmp-phase3e-final\\phase3e_validation_retry1\\v2\\predictions.csv",
+    ".tmp-phase3e-final\\phase3e_validation_retry1\\v3\\predictions.csv"
+  ]
+}

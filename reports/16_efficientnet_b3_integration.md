@@ -38,4 +38,4 @@ The 542 errors include 39 CBB→Healthy and 42 Healthy→CBB, and 70 CGM→CMD. 
 
 This is a full evaluation of the fixed validation split, but not an independent field evaluation. The images belong to the same Kaggle Cassava collection used by the project, and this validation set was used during model selection. Do not call these external-generalization metrics. `internal_test` remained excluded. The report PNG is a visualization of the checked confusion counts; counts are verified against predictions.
 
-Audit can be repeated with `scripts/audit_b3_validation_results.py`. The Phase 3E configs and PC-only runner are prepared, but no B3-V2/V3 pilot or training has been run.
+Audit can be repeated with `scripts/audit_b3_validation_results.py`. B3-V2 and B3-V3 checkpoints have since been supplied and verified; their aggregate values and limitations are recorded in [report 19](19_phase3e_results.md). Row-level GPU evaluation and comparison on PC are prepared but still pending.

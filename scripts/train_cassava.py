@@ -68,7 +68,9 @@ def balanced_pilot(rows, per_class, seed):
 
 
 class CassavaDataset(Dataset):
-    def __init__(self, rows, data_root, augment, seed, resize=256, crop=224, interpolation=cv2.INTER_AREA):
+    def __init__(self, rows, data_root, augment, seed, resize=256, crop=224,
+                 interpolation=cv2.INTER_AREA, resize_mode="square",
+                 augmentation_profile="legacy", train_crop="center"):
         self.rows = rows
         self.data_root = data_root
         self.augment = augment
@@ -76,6 +78,9 @@ class CassavaDataset(Dataset):
         self.resize = resize
         self.crop = crop
         self.interpolation = interpolation
+        self.resize_mode = resize_mode
+        self.augmentation_profile = augmentation_profile
+        self.train_crop = train_crop
 
     def __len__(self):
         return len(self.rows)
@@ -84,20 +89,47 @@ class CassavaDataset(Dataset):
         row = self.rows[index]
         with Image.open(self.data_root / row["image_path"]) as image:
             rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
-        resized = cv2.resize(rgb, (self.resize, self.resize), interpolation=self.interpolation)
+        if self.resize_mode == "square":
+            resized = cv2.resize(rgb, (self.resize, self.resize), interpolation=self.interpolation)
+        elif self.resize_mode == "shortest_edge":
+            height, width = rgb.shape[:2]
+            scale = self.resize / min(height, width)
+            out_w, out_h = max(self.resize, round(width * scale)), max(self.resize, round(height * scale))
+            resized = cv2.resize(rgb, (out_w, out_h), interpolation=self.interpolation)
+        else:
+            raise ValueError(f"unknown resize_mode: {self.resize_mode}")
         if self.augment:
-            # Augment after resize to avoid repeatedly processing the large source image.
-            # DataLoader workers receive deterministic seeds from the generator.
-            if random.random() < 0.5:
-                resized = np.flip(resized, axis=1)
-            if random.random() < 0.5:
-                resized = np.flip(resized, axis=0)
-            resized = np.rot90(resized, random.randrange(4))
-            contrast = random.uniform(0.9, 1.1)
-            brightness = random.uniform(0.9, 1.1)
-            resized = np.clip(((resized - 127.5) * contrast + 127.5) * brightness, 0, 255)
-        offset = (self.resize - self.crop) // 2
-        crop = resized[offset:offset + self.crop, offset:offset + self.crop] / 255.0
+            if self.augmentation_profile == "legacy":
+                if random.random() < 0.5:
+                    resized = np.flip(resized, axis=1)
+                if random.random() < 0.5:
+                    resized = np.flip(resized, axis=0)
+                resized = np.rot90(resized, random.randrange(4))
+                contrast = random.uniform(0.9, 1.1)
+                brightness = random.uniform(0.9, 1.1)
+                resized = np.clip(((resized - 127.5) * contrast + 127.5) * brightness, 0, 255)
+            elif self.augmentation_profile == "symptom_preserving":
+                # Preserve leaf orientation semantics; use only mild geometric
+                # and photometric changes to avoid erasing small lesions.
+                if random.random() < 0.5:
+                    resized = np.flip(resized, axis=1)
+                angle = random.uniform(-10.0, 10.0)
+                height, width = resized.shape[:2]
+                matrix = cv2.getRotationMatrix2D((width / 2, height / 2), angle, 1.0)
+                resized = cv2.warpAffine(resized, matrix, (width, height),
+                                         flags=self.interpolation, borderMode=cv2.BORDER_REFLECT_101)
+                contrast = random.uniform(0.94, 1.06)
+                brightness = random.uniform(-8.0, 8.0)
+                resized = np.clip((resized - 127.5) * contrast + 127.5 + brightness, 0, 255)
+            elif self.augmentation_profile != "none":
+                raise ValueError(f"unknown augmentation_profile: {self.augmentation_profile}")
+        height, width = resized.shape[:2]
+        if self.augment and self.train_crop == "random":
+            top = random.randint(0, height - self.crop)
+            left = random.randint(0, width - self.crop)
+        else:
+            top, left = (height - self.crop) // 2, (width - self.crop) // 2
+        crop = resized[top:top + self.crop, left:left + self.crop] / 255.0
         mean = np.asarray((0.485, 0.456, 0.406), dtype=np.float32)
         std = np.asarray((0.229, 0.224, 0.225), dtype=np.float32)
         tensor = torch.from_numpy(((crop - mean) / std).transpose(2, 0, 1).copy())
@@ -117,11 +149,17 @@ def set_trainable(model, stage):
         return
     for parameter in model.parameters():
         parameter.requires_grad = False
-    for module in (model.conv_head, model.classifier):
+    head_modules = [getattr(model, name, None) for name in ("conv_head", "classifier", "head")]
+    for module in head_modules:
+        if module is None:
+            continue
         for parameter in module.parameters():
             parameter.requires_grad = True
     if stage == "last":
-        for block in list(model.blocks)[-2:]:
+        blocks = getattr(model, "blocks", getattr(model, "stages", None))
+        if blocks is None:
+            raise ValueError(f"model {type(model).__name__} has no blocks/stages for fine-stage tuning")
+        for block in list(blocks)[-2:]:
             for parameter in block.parameters():
                 parameter.requires_grad = True
 
@@ -181,8 +219,8 @@ def main():
     parser.add_argument("--pilot-val-per-class", type=int)
     args = parser.parse_args()
     config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
-    if config["architecture"] not in ("mobilenetv3_small_100", "efficientnet_b3.ra2_in1k"):
-        parser.error("unsupported architecture")
+    if not isinstance(config.get("architecture"), str) or not config["architecture"]:
+        parser.error("config architecture must be a timm model name")
     resize, crop = int(config["resize"]), int(config["input_size"])
     interpolation_name = config["interpolation"]
     if crop <= 0 or resize < crop or interpolation_name not in ("INTER_AREA", "INTER_CUBIC"):
@@ -224,7 +262,23 @@ def main():
         raise FileNotFoundError(f"Resume checkpoint missing: {run_dir / 'last.pth'}")
     batch_size = args.batch_size or int(config["batch_size_cuda"] if device.type == "cuda" else config["batch_size_cpu"])
     use_amp = bool(config.get("amp", True)) and device.type == "cuda"
-    dataset_args = {"resize": resize, "crop": crop, "interpolation": interpolation}
+    resize_mode = config.get("resize_mode", "square")
+    augmentation_profile = config.get("augmentation_profile", "legacy")
+    train_crop = config.get("train_crop", "center")
+    if resize_mode not in ("square", "shortest_edge"):
+        parser.error("resize_mode must be square or shortest_edge")
+    if augmentation_profile not in ("legacy", "symptom_preserving", "none"):
+        parser.error("unknown augmentation_profile")
+    if train_crop not in ("center", "random"):
+        parser.error("train_crop must be center or random")
+    if config.get("scheduler", "none") not in ("none", "cosine"):
+        parser.error("scheduler must be none or cosine")
+    min_lr_ratio = float(config.get("scheduler_min_lr_ratio", 0.05))
+    if not 0.0 <= min_lr_ratio <= 1.0:
+        parser.error("scheduler_min_lr_ratio must be in [0, 1]")
+    dataset_args = {"resize": resize, "crop": crop, "interpolation": interpolation,
+                    "resize_mode": resize_mode, "augmentation_profile": augmentation_profile,
+                    "train_crop": train_crop}
     generator = torch.Generator().manual_seed(seed)
     loader_args = {"batch_size": batch_size, "num_workers": int(config["num_workers"]),
                    "worker_init_fn": seed_worker, "pin_memory": device.type == "cuda"}
@@ -237,7 +291,8 @@ def main():
     if not pretrained_path.is_file():
         raise FileNotFoundError(f"ImageNet pretrained weights missing: {pretrained_path}")
     pretrained_hash = hash_file(pretrained_path)
-    if pretrained_hash != config["pretrained_sha256"]:
+    expected_pretrained_hash = config.get("pretrained_sha256")
+    if expected_pretrained_hash and pretrained_hash != expected_pretrained_hash:
         raise ValueError("ImageNet pretrained weights SHA-256 mismatch")
     model = timm.create_model(config["architecture"], pretrained=False, num_classes=1000)
     model.load_state_dict(load_file(str(pretrained_path)), strict=True)
@@ -274,7 +329,8 @@ def main():
                 "batch_size": batch_size, "amp": use_amp, "schedule": {"head_epochs": head_epochs, "fine_epochs": last_epochs,
                                                         "fine_stage": args.fine_stage,
                                                         "fine_lr": args.fine_lr or config["last_stage_learning_rate"],
-                                                        "label_smoothing": label_smoothing},
+                                                        "label_smoothing": label_smoothing,
+                                                        "scheduler": config.get("scheduler", "none")},
                 "pretrained_file_sha256": pretrained_hash,
                 "epochs": [], "best_epoch": None,
                 "best_val_macro_f1": -1.0, "pretrained_cfg": model.pretrained_cfg}
@@ -317,10 +373,19 @@ def main():
         set_trainable(model, stage)
         optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad),
                                        lr=float(lr), weight_decay=float(config["weight_decay"]))
+        scheduler_name = config.get("scheduler", "none")
+        if scheduler_name not in ("none", "cosine"):
+            raise ValueError(f"unsupported scheduler: {scheduler_name}")
+        scheduler = (torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=max(1, int(config.get("scheduler_t_max", n_epochs))),
+            eta_min=float(lr) * min_lr_ratio)
+                     if scheduler_name == "cosine" else None)
         scaler = torch.amp.GradScaler("cuda") if use_amp else None
         stale = int(resume_state["stale"]) if resume_state and stage_index == start_stage else 0
         if resume_state and stage_index == start_stage:
             optimizer.load_state_dict(resume_state["optimizer_state"])
+            if scheduler is not None and resume_state.get("scheduler_state"):
+                scheduler.load_state_dict(resume_state["scheduler_state"])
             if scaler is not None and resume_state.get("scaler_state"):
                 scaler.load_state_dict(resume_state["scaler_state"])
         first_epoch = int(resume_state["epoch_in_stage"]) if resume_state and stage_index == start_stage else 0
@@ -341,14 +406,18 @@ def main():
                 checkpoint = {"model_state": {k: v.detach().cpu() for k, v in model.state_dict().items()},
                               "architecture": config["architecture"], "class_names": EXPECTED_LABELS,
                               "preprocessing": {"resize": resize, "crop": crop, "interpolation": interpolation_name,
+                                                "resize_mode": resize_mode,
                                                 "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]},
                               "best_epoch": epoch, "val_macro_f1": val_metrics["macro_f1"]}
                 torch.save(checkpoint, run_dir / "best.pth")
                 stale = 0
             else:
                 stale += 1
+            if scheduler is not None:
+                scheduler.step()
             (run_dir / "run.json").write_text(json.dumps(run_info, ensure_ascii=False, indent=2), encoding="utf-8")
             torch.save({"model_state": model.state_dict(), "optimizer_state": optimizer.state_dict(),
+                        "scheduler_state": scheduler.state_dict() if scheduler is not None else None,
                         "scaler_state": scaler.state_dict() if scaler is not None else None,
                         "run_info": run_info, "epoch": epoch, "stage_index": stage_index,
                         "epoch_in_stage": epoch_in_stage + 1, "stale": stale,
