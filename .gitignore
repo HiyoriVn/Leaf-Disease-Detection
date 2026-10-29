@@ -15,3 +15,8 @@ transfer/
 .tmp-phase2/
 .tmp-train/
 .tmp-cropnet/
+
+
+#
+dataset/
+models/coffee_model.pth
