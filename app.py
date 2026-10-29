@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent
 MODEL_OPTIONS = {
     "Checkpoint công bố (mặc định)": ROOT / "configs" / "cassava_app.json",
     "Mô hình nhóm fine-tune (thử nghiệm)": ROOT / "configs" / "cassava_finetuned_app.json",
+    "EfficientNet-B3 (Fine-tuned by our team)": ROOT / "configs" / "cassava_efficientnet_b3_app.json",
 }
 CROPNET_OPTION = "Google CropNet (thử nghiệm, 6 lớp)"
 if cropnet_available():
@@ -28,7 +29,7 @@ def get_model(config_path: str):
 
 
 st.title("🌿 Phân loại bệnh lá sắn")
-st.write("Tải ảnh lá sắn hoặc chụp ảnh trực tiếp để xem dự đoán từ mô hình CNN MobileNetV3-Small.")
+st.write("Tải ảnh lá sắn hoặc chụp ảnh trực tiếp để xem dự đoán từ mô hình CNN đã chọn.")
 st.info("Đây là dự đoán của AI, không phải chẩn đoán nông nghiệp đã xác nhận. Hãy tham khảo chuyên gia trước khi xử lý cây trồng.")
 
 model_choice = st.selectbox("Chọn mô hình Cassava", list(MODEL_OPTIONS))
@@ -36,6 +37,8 @@ is_cropnet = model_choice == CROPNET_OPTION
 model_config = load_config(MODEL_OPTIONS[model_choice] or MODEL_OPTIONS["Checkpoint công bố (mặc định)"])
 if is_cropnet:
     st.caption("CropNet dùng nhãn Green Mite và thêm Unknown; nhãn local là Green Mottle. Đây là chế độ khám phá, chưa có metric đánh giá hợp lệ trên dữ liệu local. Lần đầu suy luận có thể chậm do TensorFlow khởi động.")
+elif model_choice == "EfficientNet-B3 (Fine-tuned by our team)":
+    st.caption("EfficientNet-B3 · ImageNet pretrained, fine-tuned trên Cassava · input 300×300 · theo run PC: validation accuracy 83,12%, macro-F1 0,7052 (chờ tái lập). Đây là validation cùng nguồn, không phải internal test hay ảnh thực địa độc lập.")
 elif model_choice == "Mô hình nhóm fine-tune (thử nghiệm)":
     st.caption("Mô hình mới: accuracy 81,8%, macro-F1 0,701 trên internal test cùng nguồn Kaggle; chưa kiểm định ngoài thực địa.")
 else:

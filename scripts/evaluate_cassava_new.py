@@ -11,6 +11,7 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import timm
+import cv2
 import torch
 from torch.utils.data import DataLoader
 import yaml
@@ -26,6 +27,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--data-root", type=Path)
     parser.add_argument("--manifest", type=Path, default=ROOT / "manifests" / "cassava.csv")
+    parser.add_argument("--batch-size", type=int, help="Reduce if evaluation exceeds CUDA memory")
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"test result already exists; refusing to repeat: {args.output}")
@@ -36,14 +38,27 @@ def main():
     checkpoint = torch.load(args.checkpoint, map_location="cpu", weights_only=True)
     if tuple(checkpoint["class_names"]) != EXPECTED_LABELS:
         raise ValueError("checkpoint class order differs from frozen label contract")
-    if checkpoint["preprocessing"] != {"resize": 256, "crop": 224, "interpolation": "INTER_AREA",
+    expected_preprocessing = {
+        "mobilenetv3_small_100": (256, 224, "INTER_AREA"),
+        "efficientnet_b3.ra2_in1k": (343, 300, "INTER_CUBIC"),
+    }
+    architecture = checkpoint["architecture"]
+    if architecture not in expected_preprocessing:
+        raise ValueError(f"unsupported architecture: {architecture}")
+    resize, crop, interpolation = expected_preprocessing[architecture]
+    if checkpoint["preprocessing"] != {"resize": resize, "crop": crop, "interpolation": interpolation,
                                        "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]}:
         raise ValueError("checkpoint preprocessing differs from evaluation")
-    model = timm.create_model(checkpoint["architecture"], pretrained=False, num_classes=5)
+    model = timm.create_model(architecture, pretrained=False, num_classes=5)
     model.load_state_dict(checkpoint["model_state"], strict=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device).eval()
-    loader = DataLoader(CassavaDataset(test_rows, root, False, 0), batch_size=16 if device.type == "cuda" else 8,
+    default_batch = 8 if architecture == "efficientnet_b3.ra2_in1k" or device.type == "cpu" else 16
+    batch_size = args.batch_size or default_batch
+    if batch_size < 1:
+        parser.error("batch size must be positive")
+    loader = DataLoader(CassavaDataset(test_rows, root, False, 0, resize=resize, crop=crop,
+                                       interpolation=getattr(cv2, interpolation)), batch_size=batch_size,
                         num_workers=2, pin_memory=device.type == "cuda")
     true, pred, predictions = [], [], []
     started = time.perf_counter()
@@ -68,7 +83,9 @@ def main():
     metrics.update({"scope": "internal test of newly trained ImageNet-initialized model; same Kaggle source, no external generalization claim",
                     "split": "internal_test", "device": str(device), "gpu": torch.cuda.get_device_name(0) if device.type == "cuda" else None,
                     "duration_seconds": round(time.perf_counter() - started, 2), "checkpoint_sha256": hash_file(args.checkpoint),
-                    "manifest_sha256": hash_file(args.manifest), "best_epoch": checkpoint["best_epoch"],
+                    "manifest_sha256": hash_file(args.manifest), "architecture": architecture,
+                    "preprocessing": checkpoint["preprocessing"], "batch_size": batch_size,
+                    "best_epoch": checkpoint["best_epoch"],
                     "selection_val_macro_f1": checkpoint["val_macro_f1"], "class_names": EXPECTED_LABELS})
     args.output.mkdir(parents=True)
     with (args.output / "predictions.csv").open("w", encoding="utf-8", newline="") as stream:

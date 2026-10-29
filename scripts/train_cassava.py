@@ -1,4 +1,4 @@
-"""Train MobileNetV3-Small from ImageNet weights on frozen Cassava splits.
+"""Train a configured timm ImageNet backbone on frozen Cassava splits.
 
 The internal-test manifest rows are checked for split integrity, but their
 images are not decoded or scored. Select the best validation checkpoint
@@ -68,11 +68,14 @@ def balanced_pilot(rows, per_class, seed):
 
 
 class CassavaDataset(Dataset):
-    def __init__(self, rows, data_root, augment, seed):
+    def __init__(self, rows, data_root, augment, seed, resize=256, crop=224, interpolation=cv2.INTER_AREA):
         self.rows = rows
         self.data_root = data_root
         self.augment = augment
         self.seed = seed
+        self.resize = resize
+        self.crop = crop
+        self.interpolation = interpolation
 
     def __len__(self):
         return len(self.rows)
@@ -81,9 +84,9 @@ class CassavaDataset(Dataset):
         row = self.rows[index]
         with Image.open(self.data_root / row["image_path"]) as image:
             rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
-        resized = cv2.resize(rgb, (256, 256), interpolation=cv2.INTER_AREA)
+        resized = cv2.resize(rgb, (self.resize, self.resize), interpolation=self.interpolation)
         if self.augment:
-            # Augment at 256px to avoid repeatedly processing the large source image.
+            # Augment after resize to avoid repeatedly processing the large source image.
             # DataLoader workers receive deterministic seeds from the generator.
             if random.random() < 0.5:
                 resized = np.flip(resized, axis=1)
@@ -93,7 +96,8 @@ class CassavaDataset(Dataset):
             contrast = random.uniform(0.9, 1.1)
             brightness = random.uniform(0.9, 1.1)
             resized = np.clip(((resized - 127.5) * contrast + 127.5) * brightness, 0, 255)
-        crop = resized[16:240, 16:240] / 255.0
+        offset = (self.resize - self.crop) // 2
+        crop = resized[offset:offset + self.crop, offset:offset + self.crop] / 255.0
         mean = np.asarray((0.485, 0.456, 0.406), dtype=np.float32)
         std = np.asarray((0.229, 0.224, 0.225), dtype=np.float32)
         tensor = torch.from_numpy(((crop - mean) / std).transpose(2, 0, 1).copy())
@@ -122,7 +126,7 @@ def set_trainable(model, stage):
                 parameter.requires_grad = True
 
 
-def run_epoch(model, loader, device, criterion, optimizer=None, scaler=None):
+def run_epoch(model, loader, device, criterion, optimizer=None, scaler=None, use_amp=True):
     training = optimizer is not None
     model.train(training)
     if training:
@@ -138,7 +142,7 @@ def run_epoch(model, loader, device, criterion, optimizer=None, scaler=None):
         if training:
             optimizer.zero_grad(set_to_none=True)
         with torch.set_grad_enabled(training):
-            with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=device.type == "cuda"):
+            with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=device.type == "cuda" and use_amp):
                 logits = model(images)
                 loss = criterion(logits, labels)
             if training:
@@ -171,9 +175,25 @@ def main():
     parser.add_argument("--last-stage-epochs", type=int)
     parser.add_argument("--fine-stage", choices=("last", "all"), default="last")
     parser.add_argument("--fine-lr", type=float)
-    parser.add_argument("--label-smoothing", type=float, default=0.0)
+    parser.add_argument("--label-smoothing", type=float)
+    parser.add_argument("--batch-size", type=int, help="Override configured batch size (reduce on CUDA OOM)")
+    parser.add_argument("--pilot-train-per-class", type=int)
+    parser.add_argument("--pilot-val-per-class", type=int)
     args = parser.parse_args()
     config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    if config["architecture"] not in ("mobilenetv3_small_100", "efficientnet_b3.ra2_in1k"):
+        parser.error("unsupported architecture")
+    resize, crop = int(config["resize"]), int(config["input_size"])
+    interpolation_name = config["interpolation"]
+    if crop <= 0 or resize < crop or interpolation_name not in ("INTER_AREA", "INTER_CUBIC"):
+        parser.error("invalid resize/crop/interpolation")
+    interpolation = getattr(cv2, interpolation_name)
+    if args.batch_size is not None and args.batch_size < 1:
+        parser.error("batch size must be positive")
+    if any(x is not None and x < 1 for x in (args.pilot_train_per_class, args.pilot_val_per_class)):
+        parser.error("pilot per-class counts must be positive")
+    if (args.pilot_train_per_class or args.pilot_val_per_class) and not args.pilot:
+        parser.error("pilot count overrides require --pilot")
     dataset_config = yaml.safe_load((ROOT / "configs" / "dataset_config.yaml").read_text(encoding="utf-8"))
     seed = int(config["seed"])
     random.seed(seed)
@@ -193,8 +213,8 @@ def main():
     val_rows = [r for r in rows if r["split"] == "val"]
     full_train_counts = np.bincount([int(r["label_index"]) for r in train_rows], minlength=5)
     if args.pilot:
-        train_rows = balanced_pilot(train_rows, int(config["pilot_train_per_class"]), seed)
-        val_rows = balanced_pilot(val_rows, int(config["pilot_val_per_class"]), seed + 1)
+        train_rows = balanced_pilot(train_rows, args.pilot_train_per_class or int(config["pilot_train_per_class"]), seed)
+        val_rows = balanced_pilot(val_rows, args.pilot_val_per_class or int(config["pilot_val_per_class"]), seed + 1)
     run_dir = args.output_dir or (ROOT / "checkpoints" / "experiments" / args.run_name)
     run_dir = run_dir.resolve()
     if run_dir.exists() and any(run_dir.iterdir()) and not args.resume:
@@ -202,13 +222,15 @@ def main():
     run_dir.mkdir(parents=True, exist_ok=True)
     if args.resume and not (run_dir / "last.pth").is_file():
         raise FileNotFoundError(f"Resume checkpoint missing: {run_dir / 'last.pth'}")
-    batch_size = int(config["batch_size_cuda"] if device.type == "cuda" else config["batch_size_cpu"])
+    batch_size = args.batch_size or int(config["batch_size_cuda"] if device.type == "cuda" else config["batch_size_cpu"])
+    use_amp = bool(config.get("amp", True)) and device.type == "cuda"
+    dataset_args = {"resize": resize, "crop": crop, "interpolation": interpolation}
     generator = torch.Generator().manual_seed(seed)
     loader_args = {"batch_size": batch_size, "num_workers": int(config["num_workers"]),
                    "worker_init_fn": seed_worker, "pin_memory": device.type == "cuda"}
-    train_loader = DataLoader(CassavaDataset(train_rows, data_root, True, seed), shuffle=True,
+    train_loader = DataLoader(CassavaDataset(train_rows, data_root, True, seed, **dataset_args), shuffle=True,
                               generator=generator, **loader_args)
-    val_loader = DataLoader(CassavaDataset(val_rows, data_root, False, seed), shuffle=False,
+    val_loader = DataLoader(CassavaDataset(val_rows, data_root, False, seed, **dataset_args), shuffle=False,
                             **loader_args)
     # Explicit ImageNet initialization; never load the disease-specific checkpoint.
     pretrained_path = ROOT / config["pretrained_file"]
@@ -223,11 +245,19 @@ def main():
     model.to(device)
     loss_name = args.loss or config["loss"]
     train_counts = np.bincount([int(r["label_index"]) for r in train_rows], minlength=5)
-    weights = (sum(full_train_counts) / (5 * full_train_counts)).astype(np.float32)
+    # Exponent 1.0 preserves historical inverse-frequency weighting. Lower
+    # exponents temper the minority boost to reduce noisy-gradient overfit.
+    weight_power = float(config.get("class_weight_power", 1.0))
+    if weight_power <= 0:
+        raise ValueError("class_weight_power must be positive")
+    weights = (sum(full_train_counts) / (5 * full_train_counts)) ** weight_power
+    weights = weights.astype(np.float32)
     weight_tensor = torch.tensor(weights, device=device) if loss_name == "weighted" else None
-    if not 0.0 <= args.label_smoothing < 1.0:
+    label_smoothing = (float(config.get("label_smoothing", 0.0))
+                       if args.label_smoothing is None else args.label_smoothing)
+    if not 0.0 <= label_smoothing < 1.0:
         parser.error("label smoothing must be in [0, 1)")
-    criterion = nn.CrossEntropyLoss(weight=weight_tensor, label_smoothing=args.label_smoothing)
+    criterion = nn.CrossEntropyLoss(weight=weight_tensor, label_smoothing=label_smoothing)
     head_epochs = args.head_epochs if args.head_epochs is not None else int(config["head_epochs"])
     last_epochs = args.last_stage_epochs if args.last_stage_epochs is not None else int(config["last_stage_epochs"])
     if args.pilot:
@@ -239,27 +269,38 @@ def main():
                 "manifest_sha256": hash_file(manifest_path),
                 "config": config, "manifest_counts": counts, "train_n": len(train_rows), "val_n": len(val_rows),
                 "train_class_counts": train_counts.tolist(), "loss": loss_name,
+                "class_weight_power": weight_power if loss_name == "weighted" else None,
                 "class_weights": weights.tolist() if loss_name == "weighted" else None,
-                "batch_size": batch_size, "schedule": {"head_epochs": head_epochs, "fine_epochs": last_epochs,
+                "batch_size": batch_size, "amp": use_amp, "schedule": {"head_epochs": head_epochs, "fine_epochs": last_epochs,
                                                         "fine_stage": args.fine_stage,
                                                         "fine_lr": args.fine_lr or config["last_stage_learning_rate"],
-                                                        "label_smoothing": args.label_smoothing},
+                                                        "label_smoothing": label_smoothing},
                 "pretrained_file_sha256": pretrained_hash,
                 "epochs": [], "best_epoch": None,
                 "best_val_macro_f1": -1.0, "pretrained_cfg": model.pretrained_cfg}
     started = time.perf_counter()
+    elapsed_offset = 0.0
     epoch = 0
     resume_state = None
     if args.resume:
         resume_state = torch.load(run_dir / "last.pth", map_location="cpu", weights_only=False)
         if resume_state["manifest_sha256"] != hash_file(manifest_path) or resume_state["pretrained_sha256"] != pretrained_hash:
             raise ValueError("Resume manifest or ImageNet weights differ from the original run")
+        previous = resume_state["run_info"]
+        if (previous["config"] != config or previous["pilot"] != args.pilot or
+                previous["batch_size"] != batch_size or previous["schedule"] != run_info["schedule"] or
+                previous["train_n"] != len(train_rows) or previous["val_n"] != len(val_rows)):
+            raise ValueError("Resume configuration, schedule, batch size or pilot sample changed")
         model.load_state_dict(resume_state["model_state"], strict=True)
         run_info = resume_state["run_info"]
+        if run_info["epochs"]:
+            elapsed_offset = float(run_info["epochs"][-1]["elapsed_seconds"])
         epoch = int(resume_state["epoch"])
         random.setstate(resume_state["python_rng"])
         np.random.set_state(resume_state["numpy_rng"])
         torch.set_rng_state(resume_state["torch_rng"])
+        if "loader_rng" in resume_state:
+            generator.set_state(resume_state["loader_rng"])
         if torch.cuda.is_available() and resume_state.get("cuda_rng"):
             torch.cuda.set_rng_state_all(resume_state["cuda_rng"])
     stages = (("head", head_epochs, config["head_learning_rate"]),
@@ -276,7 +317,7 @@ def main():
         set_trainable(model, stage)
         optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad),
                                        lr=float(lr), weight_decay=float(config["weight_decay"]))
-        scaler = torch.amp.GradScaler("cuda") if device.type == "cuda" else None
+        scaler = torch.amp.GradScaler("cuda") if use_amp else None
         stale = int(resume_state["stale"]) if resume_state and stage_index == start_stage else 0
         if resume_state and stage_index == start_stage:
             optimizer.load_state_dict(resume_state["optimizer_state"])
@@ -284,11 +325,13 @@ def main():
                 scaler.load_state_dict(resume_state["scaler_state"])
         first_epoch = int(resume_state["epoch_in_stage"]) if resume_state and stage_index == start_stage else 0
         for epoch_in_stage in range(first_epoch, n_epochs):
+            if stale >= int(config["early_stopping_patience"]):
+                break
             epoch += 1
-            train_metrics = run_epoch(model, train_loader, device, criterion, optimizer, scaler)
-            val_metrics = run_epoch(model, val_loader, device, criterion)
+            train_metrics = run_epoch(model, train_loader, device, criterion, optimizer, scaler, use_amp)
+            val_metrics = run_epoch(model, val_loader, device, criterion, use_amp=use_amp)
             record = {"epoch": epoch, "stage": stage, "train": train_metrics, "val": val_metrics,
-                      "elapsed_seconds": round(time.perf_counter() - started, 2)}
+                      "elapsed_seconds": round(elapsed_offset + time.perf_counter() - started, 2)}
             run_info["epochs"].append(record)
             print(json.dumps(record), flush=True)
             (run_dir / "epochs.jsonl").open("a", encoding="utf-8").write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -297,7 +340,7 @@ def main():
                 run_info["best_val_macro_f1"] = val_metrics["macro_f1"]
                 checkpoint = {"model_state": {k: v.detach().cpu() for k, v in model.state_dict().items()},
                               "architecture": config["architecture"], "class_names": EXPECTED_LABELS,
-                              "preprocessing": {"resize": 256, "crop": 224, "interpolation": "INTER_AREA",
+                              "preprocessing": {"resize": resize, "crop": crop, "interpolation": interpolation_name,
                                                 "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]},
                               "best_epoch": epoch, "val_macro_f1": val_metrics["macro_f1"]}
                 torch.save(checkpoint, run_dir / "best.pth")
@@ -312,12 +355,13 @@ def main():
                         "manifest_sha256": hash_file(manifest_path), "pretrained_sha256": pretrained_hash,
                         "python_rng": random.getstate(), "numpy_rng": np.random.get_state(),
                         "torch_rng": torch.get_rng_state(),
+                        "loader_rng": generator.get_state(),
                         "cuda_rng": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None},
                        run_dir / "last.pth")
             if stale >= int(config["early_stopping_patience"]):
                 break
         resume_state = None
-    run_info["duration_seconds"] = round(time.perf_counter() - started, 2)
+    run_info["duration_seconds"] = round(elapsed_offset + time.perf_counter() - started, 2)
     run_info["best_checkpoint_sha256"] = hash_file(run_dir / "best.pth")
     if device.type == "cuda":
         run_info["gpu_peak_memory_bytes"] = torch.cuda.max_memory_allocated()

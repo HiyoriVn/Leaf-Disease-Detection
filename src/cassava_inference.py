@@ -37,6 +37,7 @@ class CassavaConfig:
     class_names: tuple[str, ...]
     resize: int
     crop: int
+    interpolation: str
     mean: tuple[float, float, float]
     std: tuple[float, float, float]
     max_upload_bytes: int
@@ -48,11 +49,16 @@ def load_config(path: Path = CONFIG_PATH) -> CassavaConfig:
         data = json.loads(path.read_text(encoding="utf-8"))
         prep = data["preprocessing"]
         labels = tuple(data["class_names"])
-        if data["architecture"] != "mobilenetv3_small_100" or data["num_classes"] != 5 or len(labels) != 5:
-            raise ValueError("expected MobileNetV3-Small with five classes")
-        if labels != EXPECTED_LABELS or prep["interpolation"] != "INTER_AREA":
+        expected_preprocessing = {
+            "mobilenetv3_small_100": (256, 224, "INTER_AREA"),
+            "efficientnet_b3.ra2_in1k": (343, 300, "INTER_CUBIC"),
+        }
+        architecture = data["architecture"]
+        if architecture not in expected_preprocessing or data["num_classes"] != 5 or len(labels) != 5:
+            raise ValueError("unsupported Cassava architecture or class count")
+        if labels != EXPECTED_LABELS:
             raise ValueError("invalid checkpoint label order or interpolation")
-        if prep["resize"] != 256 or prep["crop"] != 224:
+        if (prep["resize"], prep["crop"], prep["interpolation"]) != expected_preprocessing[architecture]:
             raise ValueError("unexpected preprocessing dimensions")
         mean, std = tuple(map(float, prep["mean"])), tuple(map(float, prep["std"]))
         if len(mean) != 3 or len(std) != 3 or any(x <= 0 for x in std):
@@ -67,8 +73,8 @@ def load_config(path: Path = CONFIG_PATH) -> CassavaConfig:
             raise ValueError("image limits must be positive")
         return CassavaConfig(
             checkpoint=(ROOT / relative_checkpoint).resolve(), checkpoint_sha256=sha,
-            architecture=data["architecture"], class_names=labels,
-            resize=prep["resize"], crop=prep["crop"], mean=mean, std=std,
+            architecture=architecture, class_names=labels,
+            resize=prep["resize"], crop=prep["crop"], interpolation=prep["interpolation"], mean=mean, std=std,
             max_upload_bytes=int(data["max_upload_bytes"]), max_pixels=int(data["max_pixels"]),
         )
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
@@ -92,7 +98,7 @@ def decode_image(content: bytes, config: CassavaConfig) -> Image.Image:
 
 def preprocess_image(image: Image.Image, config: CassavaConfig) -> torch.Tensor:
     rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
-    resized = cv2.resize(rgb, (config.resize, config.resize), interpolation=cv2.INTER_AREA)
+    resized = cv2.resize(rgb, (config.resize, config.resize), interpolation=getattr(cv2, config.interpolation))
     offset = (config.resize - config.crop) // 2
     cropped = resized[offset:offset + config.crop, offset:offset + config.crop, :] / 255.0
     normalized = (cropped - np.asarray(config.mean, dtype=np.float32)) / np.asarray(config.std, dtype=np.float32)
@@ -115,6 +121,13 @@ def load_cassava_model(config: CassavaConfig) -> Any:
     try:
         model = timm.create_model(config.architecture, pretrained=False, num_classes=len(config.class_names))
         state = torch.load(config.checkpoint, map_location="cpu", weights_only=True)
+        if config.architecture == "efficientnet_b3.ra2_in1k":
+            if not isinstance(state, dict) or tuple(state.get("class_names", ())) != config.class_names or state.get("architecture") != config.architecture:
+                raise ValueError("EfficientNet-B3 checkpoint architecture or labels differ from config")
+            expected_prep = {"resize": config.resize, "crop": config.crop, "interpolation": config.interpolation,
+                             "mean": list(config.mean), "std": list(config.std)}
+            if state.get("preprocessing") != expected_prep:
+                raise ValueError("EfficientNet-B3 checkpoint preprocessing differs from config")
         weights = state["model_state"] if isinstance(state, dict) and "model_state" in state else state
         model.load_state_dict(weights, strict=True)
         model.eval()

@@ -62,6 +62,16 @@ Script huấn luyện chỉ đọc ảnh train/validation. Không chạy `script
 
 Để chạy độc lập trên PC Windows NVIDIA, xem [hướng dẫn chuyển repo/dataset, cài CUDA, logging và resume](docs/WINDOWS_GPU_TRAINING.md). PowerShell helpers: `scripts/setup_train.ps1`, `scripts/prepare_training_bundle.ps1`, `scripts/run_train.ps1`.
 
+### EfficientNet-B3 trên RTX 3060 (thí nghiệm mới)
+
+Config riêng `configs/cassava_efficientnet_b3.yaml` dùng ImageNet pretrained `efficientnet_b3.ra2_in1k`, ảnh 300×300, AMP và batch CUDA khởi đầu 16. Trọng số safetensors 49.335.454 byte phải nằm ở `checkpoints/imagenet_efficientnet_b3_ra2_in1k.safetensors`; SHA-256 được kiểm tra trước khi train. Đã chạy pilot kỹ thuật 10 ảnh train/5 ảnh validation trên CPU; **chưa chạy full training hoặc chấm internal test**. Xem [báo cáo chuẩn bị](reports/15_efficientnet_b3_preparation.md) và [lệnh chuyển sang PC RTX 3060](docs/WINDOWS_GPU_TRAINING.md#efficientnet-b3-trên-rtx-3060-12-gb-thí-nghiệm-riêng). MobileNetV3-Small vẫn dùng config mặc định và checkpoint cũ.
+
+Checkpoint B3 đã hoàn tất trên PC và được tích hợp để chọn trong ứng dụng. Validation GPU trên đủ 3.210 ảnh đã được trả về và audit: accuracy **83,12%**, macro-F1 **0,7052**, balanced accuracy **0,7001**; có 542 dự đoán sai. Đây là validation cùng nguồn Kaggle, không phải external test. Xem [báo cáo tích hợp](reports/16_efficientnet_b3_integration.md), [so sánh và lỗi theo lớp](reports/17_cassava_model_comparison.md) và artifact audit `reports/b3_validation_archive_audit.json`.
+
+Phase 3E chuẩn bị hai thí nghiệm B3 riêng: weighted CE có trọng số điều tiết và standard CE với label smoothing 0.05. Chưa chạy chúng; cả pilot và full training chỉ chạy trên RTX 3060 theo [kế hoạch](reports/18_phase3e_experiment_plan.md) và [hướng dẫn PC](docs/PHASE3E_GPU_RUN.md). Baseline/checkpoints hiện có được giữ nguyên, internal test vẫn khóa cho tới khi chọn xong cấu hình.
+
+Trạng thái tích hợp và so sánh hiện có: [report 16](reports/16_efficientnet_b3_integration.md), [report 17](reports/17_cassava_model_comparison.md). Đánh giá GPU có thể chạy độc lập với Codex bằng `scripts/run_evaluate_b3.ps1` sau khi chép source-only bundle lên PC.
+
 ## CropNet (Phase 3C, optional)
 
 Google CropNet is available as a separate **exploratory** six-class option in the Cassava Streamlit app when `.venv-cropnet` and `checkpoints/cropnet` exist. Its `CGM` output means **Cassava Green Mite**; the local Kaggle 2020 label means **Cassava Green Mottle**. They have not been mapped to each other, so no local five-class accuracy is claimed. The two PyTorch choices and default remain unchanged. See [the evaluation report](reports/14_cropnet_evaluation.md).

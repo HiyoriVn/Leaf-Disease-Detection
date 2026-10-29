@@ -11,6 +11,7 @@ __pycache__/
 .venv-train/
 .venv-cropnet/
 checkpoints/
+transfer/
 .tmp-phase2/
 .tmp-train/
 .tmp-cropnet/

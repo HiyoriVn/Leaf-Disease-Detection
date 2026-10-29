@@ -108,3 +108,33 @@ def test_finetuned_checkpoint_cpu_compatibility():
     assert result["output_shape"] == [1, 5]
     assert result["predicted_label"] in config.class_names
     assert sum(result["probabilities"]) == pytest.approx(1.0, abs=1e-6)
+
+
+def test_efficientnet_b3_full_checkpoint_real_image():
+    config = load_config(Path("configs/cassava_efficientnet_b3_app.json"))
+    data_root = Path(yaml.safe_load(Path("configs/dataset_config.yaml").read_text(encoding="utf-8"))["data_root"])
+    image_path = data_root / "cassava-leaf-disease-classification/train_images/1000015157.jpg"
+    assert config.architecture == "efficientnet_b3.ra2_in1k"
+    assert config.class_names == load_config().class_names
+    if not config.checkpoint.is_file() or not image_path.is_file():
+        pytest.skip("B3 checkpoint or local image unavailable")
+    model = load_cassava_model(config)
+    image = decode_image(image_path.read_bytes(), config)
+    tensor = preprocess_image(image, config)
+    assert tensor.shape == (1, 3, 300, 300)
+    result = predict_image(image, model, config)
+    assert result["output_shape"] == [1, 5]
+    assert result["predicted_label"] in config.class_names
+    assert sum(result["probabilities"]) == pytest.approx(1.0, abs=1e-6)
+
+
+def test_cropnet_option_still_predicts_real_image():
+    from src.cropnet_bridge import available, predict_cropnet
+    if not available():
+        pytest.skip("optional CropNet environment unavailable")
+    data_root = Path(yaml.safe_load(Path("configs/dataset_config.yaml").read_text(encoding="utf-8"))["data_root"])
+    image_path = data_root / "cassava-leaf-disease-classification/train_images/1000015157.jpg"
+    result = predict_cropnet(image_path.read_bytes())
+    assert result["output_shape"] == [1, 6]
+    assert len(result["probabilities"]) == 6
+    assert sum(result["probabilities"]) == pytest.approx(1.0, abs=1e-5)

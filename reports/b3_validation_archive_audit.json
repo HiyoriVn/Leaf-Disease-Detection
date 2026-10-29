@@ -1,0 +1,192 @@
+{
+  "status": "verified",
+  "results_archive_sha256": "668f9a080e3a8b0e56cf28e26a4b87c8785485988adddb49d206be752a3ceb31",
+  "n": 3210,
+  "correct": 2668,
+  "misclassified": 542,
+  "accuracy": 0.8311526479750779,
+  "macro_f1": 0.7051832563873977,
+  "balanced_accuracy": 0.7001011272919557,
+  "checkpoint_sha256": "7924296913c5f3a6c9d822212cdb0a8326b6d5c4cd2778078d6c47bebd0d406b",
+  "manifest_sha256": "570b0d52ea950dec13de0eed792614b67c039b08b2cc28c8e588bb87b2f61082",
+  "selection_epoch": 6,
+  "checkpoint_val_macro_f1_metadata": 0.7051832563873977,
+  "per_class": [
+    {
+      "class_name": "Cassava Bacterial Blight (CBB)",
+      "support": 163,
+      "precision": 0.5076923076923077,
+      "recall": 0.6073619631901841,
+      "f1": 0.553072625698324
+    },
+    {
+      "class_name": "Cassava Brown Streak Disease (CBSD)",
+      "support": 328,
+      "precision": 0.7186440677966102,
+      "recall": 0.6463414634146342,
+      "f1": 0.680577849117175
+    },
+    {
+      "class_name": "Cassava Green Mottle (CGM)",
+      "support": 358,
+      "precision": 0.7687296416938111,
+      "recall": 0.659217877094972,
+      "f1": 0.7097744360902256
+    },
+    {
+      "class_name": "Cassava Mosaic Disease (CMD)",
+      "support": 1974,
+      "precision": 0.9195289499509323,
+      "recall": 0.9493414387031408,
+      "f1": 0.9341974077766699
+    },
+    {
+      "class_name": "Healthy",
+      "support": 387,
+      "precision": 0.6586666666666666,
+      "recall": 0.6382428940568475,
+      "f1": 0.6482939632545932
+    }
+  ],
+  "confusion_matrix": [
+    [
+      99,
+      12,
+      3,
+      10,
+      39
+    ],
+    [
+      36,
+      212,
+      8,
+      39,
+      33
+    ],
+    [
+      3,
+      19,
+      236,
+      70,
+      30
+    ],
+    [
+      15,
+      25,
+      34,
+      1874,
+      26
+    ],
+    [
+      42,
+      27,
+      26,
+      45,
+      247
+    ]
+  ],
+  "error_pairs": [
+    {
+      "true_label": "Cassava Bacterial Blight (CBB)",
+      "predicted_label": "Cassava Brown Streak Disease (CBSD)",
+      "count": 12
+    },
+    {
+      "true_label": "Cassava Bacterial Blight (CBB)",
+      "predicted_label": "Cassava Green Mottle (CGM)",
+      "count": 3
+    },
+    {
+      "true_label": "Cassava Bacterial Blight (CBB)",
+      "predicted_label": "Cassava Mosaic Disease (CMD)",
+      "count": 10
+    },
+    {
+      "true_label": "Cassava Bacterial Blight (CBB)",
+      "predicted_label": "Healthy",
+      "count": 39
+    },
+    {
+      "true_label": "Cassava Brown Streak Disease (CBSD)",
+      "predicted_label": "Cassava Bacterial Blight (CBB)",
+      "count": 36
+    },
+    {
+      "true_label": "Cassava Brown Streak Disease (CBSD)",
+      "predicted_label": "Cassava Green Mottle (CGM)",
+      "count": 8
+    },
+    {
+      "true_label": "Cassava Brown Streak Disease (CBSD)",
+      "predicted_label": "Cassava Mosaic Disease (CMD)",
+      "count": 39
+    },
+    {
+      "true_label": "Cassava Brown Streak Disease (CBSD)",
+      "predicted_label": "Healthy",
+      "count": 33
+    },
+    {
+      "true_label": "Cassava Green Mottle (CGM)",
+      "predicted_label": "Cassava Bacterial Blight (CBB)",
+      "count": 3
+    },
+    {
+      "true_label": "Cassava Green Mottle (CGM)",
+      "predicted_label": "Cassava Brown Streak Disease (CBSD)",
+      "count": 19
+    },
+    {
+      "true_label": "Cassava Green Mottle (CGM)",
+      "predicted_label": "Cassava Mosaic Disease (CMD)",
+      "count": 70
+    },
+    {
+      "true_label": "Cassava Green Mottle (CGM)",
+      "predicted_label": "Healthy",
+      "count": 30
+    },
+    {
+      "true_label": "Cassava Mosaic Disease (CMD)",
+      "predicted_label": "Cassava Bacterial Blight (CBB)",
+      "count": 15
+    },
+    {
+      "true_label": "Cassava Mosaic Disease (CMD)",
+      "predicted_label": "Cassava Brown Streak Disease (CBSD)",
+      "count": 25
+    },
+    {
+      "true_label": "Cassava Mosaic Disease (CMD)",
+      "predicted_label": "Cassava Green Mottle (CGM)",
+      "count": 34
+    },
+    {
+      "true_label": "Cassava Mosaic Disease (CMD)",
+      "predicted_label": "Healthy",
+      "count": 26
+    },
+    {
+      "true_label": "Healthy",
+      "predicted_label": "Cassava Bacterial Blight (CBB)",
+      "count": 42
+    },
+    {
+      "true_label": "Healthy",
+      "predicted_label": "Cassava Brown Streak Disease (CBSD)",
+      "count": 27
+    },
+    {
+      "true_label": "Healthy",
+      "predicted_label": "Cassava Green Mottle (CGM)",
+      "count": 26
+    },
+    {
+      "true_label": "Healthy",
+      "predicted_label": "Cassava Mosaic Disease (CMD)",
+      "count": 45
+    }
+  ],
+  "gpu": "NVIDIA GeForce RTX 3060",
+  "duration_seconds": 24.750957800075412
+}

@@ -1,12 +1,13 @@
 from pathlib import Path
 
 import numpy as np
+import cv2
 from PIL import Image
 from safetensors.torch import load_file
 import timm
 import yaml
 
-from scripts.train_cassava import CassavaDataset, read_manifest
+from scripts.train_cassava import CassavaDataset, read_manifest, set_trainable
 from src.cassava_inference import load_config, preprocess_image
 from src.classification_metrics import classification_metrics
 
@@ -39,3 +40,29 @@ def test_imagenet_weights_strictly_match_1000_class_backbone():
     model.load_state_dict(load_file(str(weights)), strict=True)
     model.reset_classifier(5)
     assert model.classifier.out_features == 5
+
+
+def test_efficientnet_b3_preprocessing_and_weights():
+    config = yaml.safe_load(Path("configs/cassava_efficientnet_b3.yaml").read_text(encoding="utf-8"))
+    data_root = Path(yaml.safe_load(Path("configs/dataset_config.yaml").read_text(encoding="utf-8"))["data_root"])
+    rows, _ = read_manifest(Path("manifests/cassava.csv"), data_root)
+    row = next(r for r in rows if r["split"] == "val")
+    image, label = CassavaDataset([row], data_root, False, config["seed"],
+                                  resize=config["resize"], crop=config["input_size"],
+                                  interpolation=cv2.INTER_CUBIC)[0]
+    assert image.shape == (3, 300, 300)
+    assert label == int(row["label_index"])
+    weights = Path(config["pretrained_file"])
+    if weights.is_file():
+        model = timm.create_model(config["architecture"], pretrained=False, num_classes=1000)
+        model.load_state_dict(load_file(str(weights)), strict=True)
+        model.reset_classifier(5)
+        assert model.classifier.out_features == 5
+        set_trainable(model, "head")
+        assert any(p.requires_grad for p in model.classifier.parameters())
+        assert not any(p.requires_grad for p in model.blocks[0].parameters())
+        set_trainable(model, "last")
+        assert any(p.requires_grad for p in model.blocks[-1].parameters())
+        assert not any(p.requires_grad for p in model.blocks[0].parameters())
+        set_trainable(model, "all")
+        assert all(p.requires_grad for p in model.parameters())
