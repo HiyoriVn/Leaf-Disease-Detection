@@ -9,6 +9,8 @@ __pycache__/
 # Local inference environment and downloaded model weights
 .venv-phase2/
 .venv-train/
+.venv-cropnet/
 checkpoints/
 .tmp-phase2/
 .tmp-train/
+.tmp-cropnet/

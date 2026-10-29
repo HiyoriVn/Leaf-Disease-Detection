@@ -5,6 +5,7 @@ from pathlib import Path
 import streamlit as st
 
 from src.cassava_inference import CassavaInferenceError, decode_image, load_cassava_model, load_config, predict_image
+from src.cropnet_bridge import CLASS_NAMES as CROPNET_CLASSES, available as cropnet_available, predict_cropnet
 
 
 st.set_page_config(page_title="Phân loại bệnh lá sắn", page_icon="🌿", layout="centered")
@@ -15,6 +16,9 @@ MODEL_OPTIONS = {
     "Checkpoint công bố (mặc định)": ROOT / "configs" / "cassava_app.json",
     "Mô hình nhóm fine-tune (thử nghiệm)": ROOT / "configs" / "cassava_finetuned_app.json",
 }
+CROPNET_OPTION = "Google CropNet (thử nghiệm, 6 lớp)"
+if cropnet_available():
+    MODEL_OPTIONS[CROPNET_OPTION] = None
 
 
 @st.cache_resource(show_spinner=False)
@@ -28,8 +32,11 @@ st.write("Tải ảnh lá sắn hoặc chụp ảnh trực tiếp để xem dự
 st.info("Đây là dự đoán của AI, không phải chẩn đoán nông nghiệp đã xác nhận. Hãy tham khảo chuyên gia trước khi xử lý cây trồng.")
 
 model_choice = st.selectbox("Chọn mô hình Cassava", list(MODEL_OPTIONS))
-model_config = load_config(MODEL_OPTIONS[model_choice])
-if model_choice == "Mô hình nhóm fine-tune (thử nghiệm)":
+is_cropnet = model_choice == CROPNET_OPTION
+model_config = load_config(MODEL_OPTIONS[model_choice] or MODEL_OPTIONS["Checkpoint công bố (mặc định)"])
+if is_cropnet:
+    st.caption("CropNet dùng nhãn Green Mite và thêm Unknown; nhãn local là Green Mottle. Đây là chế độ khám phá, chưa có metric đánh giá hợp lệ trên dữ liệu local. Lần đầu suy luận có thể chậm do TensorFlow khởi động.")
+elif model_choice == "Mô hình nhóm fine-tune (thử nghiệm)":
     st.caption("Mô hình mới: accuracy 81,8%, macro-F1 0,701 trên internal test cùng nguồn Kaggle; chưa kiểm định ngoài thực địa.")
 else:
     st.caption("Checkpoint công bố: đánh giá trên dữ liệu cùng nguồn huấn luyện có nguy cơ trùng lặp; giữ làm lựa chọn mặc định.")
@@ -57,17 +64,17 @@ if st.button("Dự đoán bệnh", type="primary", width="stretch"):
     else:
         try:
             with st.spinner("Đang phân tích ảnh…"):
-                result = predict_image(image, get_model(str(MODEL_OPTIONS[model_choice])), model_config)
+                result = predict_cropnet(source.getvalue()) if is_cropnet else predict_image(image, get_model(str(MODEL_OPTIONS[model_choice])), model_config)
             st.subheader(result["predicted_label"])
             st.metric("Độ tin cậy của mô hình", f'{result["confidence"]:.1%}')
-            st.caption("Điểm softmax thể hiện mức ưu tiên giữa 5 lớp; điểm cao không bảo đảm dự đoán đúng.")
+            st.caption("Xác suất thể hiện mức ưu tiên giữa 6 lớp CropNet." if is_cropnet else "Điểm softmax thể hiện mức ưu tiên giữa 5 lớp; điểm cao không bảo đảm dự đoán đúng.")
             st.markdown("**Ba khả năng cao nhất**")
             for item in result["top3"]:
                 st.write(f'{item["label"]} — {item["probability"]:.1%}')
                 st.progress(item["probability"])
-        except CassavaInferenceError as exc:
+        except (CassavaInferenceError, RuntimeError) as exc:
             st.error(str(exc))
 
-with st.expander("Năm lớp mô hình hỗ trợ"):
-    for label in model_config.class_names:
+with st.expander("Các lớp mô hình hỗ trợ"):
+    for label in (CROPNET_CLASSES if is_cropnet else model_config.class_names):
         st.write(f"• {label}")

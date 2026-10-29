@@ -1,0 +1,26 @@
+image_path,local_label,published_mobilenetv3,finetuned_mobilenetv3,cropnet,cropnet_unknown_probability
+cassava-leaf-disease-classification/train_images/1000910826.jpg,Cassava Green Mottle (CGM),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Green Mite (CGM),0.00034812165540643036
+cassava-leaf-disease-classification/train_images/1003888281.jpg,Cassava Bacterial Blight (CBB),Healthy,Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),0.0036889887414872646
+cassava-leaf-disease-classification/train_images/1004389140.jpg,Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),0.00016321121074724942
+cassava-leaf-disease-classification/train_images/1005138819.jpg,Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),5.208925358601846e-06
+cassava-leaf-disease-classification/train_images/1007533812.jpg,Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),0.0001260495773749426
+cassava-leaf-disease-classification/train_images/1009049118.jpg,Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),3.902422031387687e-05
+cassava-leaf-disease-classification/train_images/1009126931.jpg,Healthy,Healthy,Cassava Green Mottle (CGM),Healthy,1.9341172446729615e-05
+cassava-leaf-disease-classification/train_images/1010855776.jpg,Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),2.8054452627657156e-07
+cassava-leaf-disease-classification/train_images/1011139244.jpg,Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),Cassava Mosaic Disease (CMD),8.60390628076857e-07
+cassava-leaf-disease-classification/train_images/1012257169.jpg,Healthy,Healthy,Healthy,Healthy,5.201306976232445e-06
+cassava-leaf-disease-classification/train_images/1012305013.jpg,Cassava Brown Streak Disease (CBSD),Healthy,Cassava Bacterial Blight (CBB),Healthy,0.0002932178322225809
+cassava-leaf-disease-classification/train_images/1012426959.jpg,Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),Cassava Brown Streak Disease (CBSD),Cassava Bacterial Blight (CBB),6.885752372909337e-05
+cassava-leaf-disease-classification/train_images/1012902365.jpg,Healthy,Healthy,Cassava Bacterial Blight (CBB),Healthy,0.0006928620277903974
+cassava-leaf-disease-classification/train_images/1014359226.jpg,Cassava Green Mottle (CGM),Cassava Green Mottle (CGM),Cassava Green Mottle (CGM),Cassava Green Mite (CGM),2.2863731885536254e-07
+cassava-leaf-disease-classification/train_images/10169000.jpg,Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Healthy,Healthy,7.80269256210886e-05
+cassava-leaf-disease-classification/train_images/1017667711.jpg,Cassava Green Mottle (CGM),Cassava Green Mottle (CGM),Cassava Green Mottle (CGM),Cassava Green Mite (CGM),2.0632331143133342e-05
+cassava-leaf-disease-classification/train_images/1018450745.jpg,Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),1.1927526429644786e-05
+cassava-leaf-disease-classification/train_images/1022932733.jpg,Healthy,Healthy,Healthy,Healthy,0.000176040775841102
+cassava-leaf-disease-classification/train_images/1024067372.jpg,Healthy,Healthy,Healthy,Cassava Mosaic Disease (CMD),0.0007576232310384512
+cassava-leaf-disease-classification/train_images/1026467332.jpg,Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),Cassava Mosaic Disease (CMD),6.138727712823311e-06
+cassava-leaf-disease-classification/train_images/1030448520.jpg,Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Cassava Brown Streak Disease (CBSD),Healthy,0.00018108380027115345
+cassava-leaf-disease-classification/train_images/1036380403.jpg,Cassava Green Mottle (CGM),Cassava Green Mottle (CGM),Cassava Green Mottle (CGM),Cassava Green Mite (CGM),1.7937648522092786e-07
+cassava-leaf-disease-classification/train_images/1068174637.jpg,Cassava Green Mottle (CGM),Healthy,Cassava Mosaic Disease (CMD),Healthy,0.00010192966874456033
+cassava-leaf-disease-classification/train_images/1078590865.jpg,Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),Cassava Green Mottle (CGM),Cassava Bacterial Blight (CBB),5.513285032066051e-06
+cassava-leaf-disease-classification/train_images/1094295442.jpg,Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),Cassava Bacterial Blight (CBB),6.259278961806558e-06

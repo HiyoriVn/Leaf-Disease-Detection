@@ -1,6 +1,6 @@
 # Cassava Leaf Disease Detection — Capstone
 
-Ứng dụng Streamlit phân loại **lá sắn** bằng checkpoint MobileNetV3-Small đã kiểm chứng ở Phase 2. Ứng dụng hỗ trợ tải ảnh hoặc chụp bằng camera, xem ảnh, dự đoán một trong năm lớp, độ tin cậy softmax và ba khả năng cao nhất. Kết quả là dự đoán AI, không phải chẩn đoán nông nghiệp đã xác nhận.
+Ứng dụng Streamlit phân loại **lá sắn** bằng checkpoint MobileNetV3-Small đã kiểm chứng ở Phase 2. Ứng dụng hỗ trợ tải ảnh hoặc chụp bằng camera, xem ảnh, dự đoán một trong năm lớp của mô hình mặc định, độ tin cậy softmax và ba khả năng cao nhất. CropNet là lựa chọn thử nghiệm riêng với sáu lớp khi đã cài. Kết quả là dự đoán AI, không phải chẩn đoán nông nghiệp đã xác nhận.
 
 ## Chạy ứng dụng trên Windows PowerShell
 
@@ -59,3 +59,18 @@ python -m pip install -r requirements-train-extra.txt
 ```
 
 Script huấn luyện chỉ đọc ảnh train/validation. Không chạy `scripts/evaluate_cassava_new.py` lặp lại trên test để thử hyperparameter; lần đánh giá đã hoàn tất nằm trong `reports/cassava_internal_test_20261028/`.
+
+## CropNet (Phase 3C, optional)
+
+Google CropNet is available as a separate **exploratory** six-class option in the Cassava Streamlit app when `.venv-cropnet` and `checkpoints/cropnet` exist. Its `CGM` output means **Cassava Green Mite**; the local Kaggle 2020 label means **Cassava Green Mottle**. They have not been mapped to each other, so no local five-class accuracy is claimed. The two PyTorch choices and default remain unchanged. See [the evaluation report](reports/14_cropnet_evaluation.md).
+
+To reproduce on Windows with Python 3.13:
+
+```powershell
+py -3.13 -m venv .venv-cropnet
+.\.venv-cropnet\Scripts\python.exe -m pip install -r requirements-cropnet.txt
+.\.venv-cropnet\Scripts\python.exe -c "import kagglehub; kagglehub.model_download('google/cropnet/tensorFlow2/classifier-cassava-disease-v1/1', output_dir='checkpoints/cropnet')"
+.\.venv-cropnet\Scripts\python.exe scripts\smoke_cropnet.py
+```
+
+The app invokes CropNet through this separate interpreter; the first CropNet prediction can take several seconds while TensorFlow starts.

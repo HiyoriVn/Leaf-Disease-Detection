@@ -1,0 +1,4 @@
+# Separate CPU-only Windows environment; do not install into .venv-phase2 or .venv-train.
+tensorflow==2.21.0
+kagglehub==1.0.3
+pillow==13.0.0

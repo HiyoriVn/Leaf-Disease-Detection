@@ -1,0 +1,46 @@
+{
+  "sample": "First five rows per local label from existing 3210-row validation predictions CSV; same-source exploratory smoke only",
+  "count": 25,
+  "class_order": [
+    "Cassava Bacterial Blight (CBB)",
+    "Cassava Brown Streak Disease (CBSD)",
+    "Cassava Green Mite (CGM)",
+    "Cassava Mosaic Disease (CMD)",
+    "Healthy",
+    "Unknown"
+  ],
+  "artifact_files": {
+    "saved_model.pb": {
+      "bytes": 1515889,
+      "sha256": "aac5d946061721786ff2cd3e8e49515d1cf660f9982a10266b519cd679410992"
+    },
+    "variables/variables.data-00000-of-00001": {
+      "bytes": 16971880,
+      "sha256": "dd6919af91cf984853e8c57a30a8bd08adbad99d424fda57474e871904a7a1e0"
+    },
+    "variables/variables.index": {
+      "bytes": 5607,
+      "sha256": "54749e7c840c85fb08409ec1911128675e743498735e08f12f50ee8d27bd9199"
+    }
+  },
+  "cropnet_prediction_counts": {
+    "Cassava Bacterial Blight (CBB)": 4,
+    "Cassava Brown Streak Disease (CBSD)": 2,
+    "Cassava Green Mite (CGM)": 4,
+    "Cassava Mosaic Disease (CMD)": 7,
+    "Healthy": 8,
+    "Unknown": 0
+  },
+  "published_agreement_count": 16,
+  "latency_ms_median_including_preprocessing": 27.77,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "output_shape": [
+    1,
+    6
+  ]
+}
