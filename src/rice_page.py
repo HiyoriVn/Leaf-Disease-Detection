@@ -219,9 +219,9 @@ def render_rice_page():
                 st.bar_chart(plot, x="Bệnh / trạng thái", y="Xác suất (%)",
                              horizontal=True, sort=False, height=415,
                              color="#1f8562")
-                with st.expander("Chi tiết 10 lớp và xác suất", expanded=True):
-                    st.dataframe(plot, hide_index=True, width="stretch")
                 show_advice("rice", label)
+                with st.expander("Chi tiết 10 lớp và xác suất", expanded=False):
+                    st.dataframe(plot, hide_index=True, width="stretch")
             with st.expander("Debug kỹ thuật — model, tensor và thời gian", expanded=result is None):
                 st.json(log)
                 st.download_button("Tải báo cáo JSON", json.dumps(log, ensure_ascii=False, indent=2),

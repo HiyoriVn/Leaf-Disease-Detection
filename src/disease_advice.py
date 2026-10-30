@@ -26,8 +26,8 @@ def get_advice(crop: str, model_label: str) -> str | None:
 def show_advice(crop: str, label: str) -> None:
     advice = get_advice(crop, label)
     if advice:
-        with st.expander("Khuyến nghị chăm sóc / xử lý — cần xác nhận thực địa", expanded=False):
+        with st.expander("Khuyến nghị xử lý và chăm sóc", expanded=True):
             st.markdown(advice)
-            st.caption("Thông tin tham khảo, không phải đơn thuốc. Kiểm tra nhãn đăng ký và hướng dẫn nông nghiệp tại địa phương.")
+            st.caption("Áp dụng theo tình trạng cây và khuyến nông địa phương. Thuốc BVTV phải đúng nhãn và đăng ký hiện hành.")
     else:
         st.caption("Chưa có khuyến nghị theo nhãn này; không tự suy diễn cách điều trị.")
