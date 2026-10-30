@@ -1,4 +1,4 @@
-"""Hệ thống phân loại bệnh cây trồng (Lá Sắn & Lá Cà Phê) với Streamlit."""
+"""Hệ thống phân loại bệnh lá cây (Cassava / Coffee / Rice)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -7,14 +7,9 @@ import streamlit as st
 from PIL import Image
 
 # Import phần xử lý lá sắn sẵn có của bạn bạn
-from src.cassava_inference import CassavaInferenceError, decode_image, load_cassava_model, load_config, predict_image
-from src.cropnet_bridge import CLASS_NAMES as CROPNET_CLASSES, available as cropnet_available, predict_cropnet
-
-# Import phần xử lý lá cà phê do bạn phụ trách
-from src.coffee_inference import CoffeeInferenceError, load_coffee_model, predict_coffee
 from src.model_registry import available_models
 
-st.set_page_config(page_title="Phân loại bệnh lá cây AI", page_icon="🌿", layout="centered")
+st.set_page_config(page_title="LeafSense | Plant Health AI", page_icon="🌿", layout="wide")
 
 ROOT = Path(__file__).resolve().parent
 REGISTRY_PATH = ROOT / "configs" / "plant_model_registry.json"
@@ -25,19 +20,33 @@ def get_available_models(crop: str, coffee_model_path: str):
     return available_models(REGISTRY_PATH, ROOT, crop, coffee_model_path or None)
 
 # --- MENU CHỌN LOẠI CÂY TRỒNG ---
-st.title("🌿 Hệ thống Phân loại Bệnh Cây Trồng bằng AI")
-st.write("Đồ án Thị giác máy tính - Hỗ trợ chẩn đoán bệnh trên Lá Sắn và Lá Cà Phê Robusta.")
-st.info("Đây là dự đoán của AI, không phải chẩn đoán nông nghiệp đã xác nhận. Hãy tham khảo chuyên gia trước khi xử lý cây trồng.")
+st.markdown("""<style>
+[data-testid="stAppViewContainer"] {background: #f5f8f7;}
+[data-testid="stSidebar"] {background: #eaf2ef;}
+.block-container {max-width: 1140px; padding-top: 2.0rem;}
+h1,h2,h3 {color: #173c32;}
+div.stButton > button[kind="primary"] {background: #167350; border-color: #167350; border-radius: 11px;}
+div.stButton > button[kind="primary"]:hover {background: #105c40; border-color: #105c40;}
+[data-testid="stMetric"] {background: white; padding: 14px; border: 1px solid #dce7e2; border-radius: 14px;}
+</style>""", unsafe_allow_html=True)
+st.title("🌿 LeafSense — Phân loại bệnh lá cây")
+st.caption("Thị giác máy tính và AI · Sắn, cà phê và lúa · Kết quả chỉ hỗ trợ tham khảo")
 
 plant_type = st.sidebar.selectbox(
     "📂 Chọn loại cây cần kiểm tra:",
-    ("Lá Sắn (Cassava)", "Lá Cà Phê (Coffee)")
+    ("Lá Lúa (Rice)", "Lá Sắn (Cassava)", "Lá Cà Phê (Coffee)")
 )
 
 # ==========================================
 # 1. NẾU NGƯỜI DÙNG CHỌN: LÁ SẮN (CASSAVA)
 # ==========================================
-if plant_type == "Lá Sắn (Cassava)":
+if plant_type == "Lá Lúa (Rice)":
+    from src.rice_page import render_rice_page
+    render_rice_page()
+
+elif plant_type == "Lá Sắn (Cassava)":
+    from src.cassava_inference import CassavaInferenceError, decode_image, load_cassava_model, load_config, predict_image
+    from src.cropnet_bridge import CLASS_NAMES as CROPNET_CLASSES, available as cropnet_available, predict_cropnet
     available_cassava_models = get_available_models("cassava", "")
     MODEL_OPTIONS = {entry["label"]: entry for entry in available_cassava_models}
     CROPNET_OPTION = "Google CropNet (thử nghiệm, 6 lớp)"
@@ -103,6 +112,7 @@ if plant_type == "Lá Sắn (Cassava)":
 # 2. NẾU NGƯỜI DÙNG CHỌN: LÁ CÀ PHÊ (COFFEE)
 # ==========================================
 else:
+    from src.coffee_inference import CoffeeInferenceError, load_coffee_model, predict_coffee
     st.subheader("☕ Chẩn đoán bệnh trên lá Cà phê ")
     st.write("Tải lên ảnh chụp lá cà phê để AI nhận diện các bệnh (Cerscospora, Leaf rust, Phoma, Healthy).")
     st.caption("💡 **Mẹo:** Để đạt độ chính xác cao nhất, hãy chụp/chọn ảnh cận cảnh 1 chiếc lá cà phê, rõ vết bệnh và hạn chế dính bàn tay hoặc phông nền quá phức tạp.")

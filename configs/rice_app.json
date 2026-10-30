@@ -1,0 +1,9 @@
+{
+  "model": "Rice-leaf/riceLeafDisease_trainingResult/lisa_paddy_fp32.tflite",
+  "labels": "Rice-leaf/riceLeafDisease_trainingResult/class_names.json",
+  "image_size": [224, 224],
+  "pixel_scale": "0_255",
+  "preprocessing_verified": false,
+  "max_pixels": 24000000,
+  "expected_model_bytes": 2255980
+}
