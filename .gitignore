@@ -18,4 +18,4 @@ transfer/
 
 # Local datasets and the separately distributed coffee checkpoint
 dataset/
-models/coffee_model.pth
+
