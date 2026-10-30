@@ -67,7 +67,7 @@
       "config": "configs/cassava_efficientnet_b3_v3_app.json",
       "sha256": "0e76a24e1d979ee29f508b83fe6059f89f7a13a167effcaddc3eacfea0cf669c",
       "checkpoint_filename": "cassava_efficientnet_b3_v3.pth",
-      "checkpoint_source": "Returned Phase 3E artifact referenced by reports/19_phase3e_results.md; file not present in this checkout",
+      "checkpoint_source": "Returned Phase 3E artifact referenced by reports/archive/19_phase3e_results.md; file not present in this checkout",
       "size_bytes": null,
       "architecture": "timm efficientnet_b3.ra2_in1k",
       "num_classes": 5,

@@ -7,7 +7,7 @@
       "crop": "cassava",
       "status": "phase3a_app_inference_passed; metrics_not_independent",
       "app_config": "configs/cassava_app.json",
-      "app_report": "reports/10_phase3a_implementation.md",
+      "app_report": "reports/archive/10_phase3a_implementation.md",
       "architecture": "timm mobilenetv3_small_100, 5-output head",
       "framework": "PyTorch 2.4.1, timm 1.0.11 (publisher requirements)",
       "weights": "mobilenetv3_best.pth, 6224097 bytes, local SHA256 4043a480d7a48d636f4feefbe31df4c52eeadd8edb8404d31319eddd807ac4bb",
@@ -39,7 +39,7 @@
       "preprocessing": "RGB; OpenCV INTER_AREA resize to 256x256; center crop 224x224; [0,1]; ImageNet mean/std; float32 NCHW",
       "observed_internal_test": {"n": 3209, "accuracy": 0.8180118416952321, "macro_f1": 0.7011231770946892, "balanced_accuracy": 0.7038590771568207},
       "evaluation_overlap_risk": "No exact SHA/group overlap across frozen splits; possible near-duplicate or same-plant exposure remains; no external field validation",
-      "reports": ["reports/12_cassava_finetuning.md", "reports/13_cassava_comparison.md"]
+      "reports": ["reports/archive/12_cassava_finetuning.md", "reports/archive/13_cassava_comparison.md"]
     },
     {
       "id": "cassava-efficientnet-b3-full-epoch6-20261029",
@@ -57,7 +57,7 @@
       "pc_reported_validation_metrics_pending_reproduction": {"accuracy": 0.8311526479750779, "macro_f1": 0.7051832563873977, "balanced_accuracy": 0.7001011272919558, "best_epoch": 6, "duration_seconds": 937.57},
       "evaluation_overlap_risk": "Fixed same-source validation set; not independent external generalization",
       "source_checkpoint": "D:/CassavaWork/Leaf-Disease-Detection/checkpoints/experiments/cassava-b3-full/best.pth",
-      "report": "reports/16_efficientnet_b3_integration.md"
+      "report": "reports/archive/16_efficientnet_b3_integration.md"
     },
     {
       "id": "Huyt/rice-leaf-disease-efficientnet-b0",
