@@ -34,6 +34,7 @@ def test_rice_config_matches_training_labels():
     assert config.labels[-1] == "tungro"
     assert len(config.labels) == 10
     assert not config.preprocessing_verified
+    assert config.pixel_scale == '0_1'
 
 
 def test_preprocess_accepts_arbitrary_rgb_sizes():
@@ -43,7 +44,9 @@ def test_preprocess_accepts_arbitrary_rgb_sizes():
         out = preprocess_rice(image, config)
         assert out.shape == (1, 224, 224, 3)
         assert out.dtype == np.float32
-        np.testing.assert_array_equal(out[0, 20, 20], [128, 64, 32])
+        np.testing.assert_allclose(out[0, 20, 20], np.array([128, 64, 32], dtype=np.float32) / 255.0, rtol=0, atol=1e-7)
+        assert out.min() >= 0
+        assert out.max() <= 1
 
 
 def test_predict_uses_original_class_order():
