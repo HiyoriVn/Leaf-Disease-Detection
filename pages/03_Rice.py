@@ -18,13 +18,6 @@ except RiceInferenceError as exc:
     st.error(str(exc))
     st.stop()
 
-if not cfg.preprocessing_verified:
-    st.warning(
-        "Tiền xử lý LiSA chưa được đối chiếu đầy đủ với notebook train. "
-        "Đang dùng resize bilinear 224×224, RGB float32 trong khoảng 0–255. "
-        "Các kết quả chỉ phục vụ thử nghiệm, chưa được xác nhận tương đương Keras/TFLite."
-    )
-
 mode = st.radio("Nguồn ảnh", ("Tải ảnh lên", "Chụp bằng camera"), horizontal=True)
 source = (st.file_uploader("Chọn ảnh lá lúa", type=["jpg", "jpeg", "png", "webp"])
           if mode == "Tải ảnh lên" else st.camera_input("Chụp ảnh lá lúa"))
