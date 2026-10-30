@@ -17,8 +17,10 @@ remain untouched. Their imports are lazy, so Rice alone does not import timm.
 
 ## P0: preprocessing verification — REQUIRED
 
-Current config: configs/rice_app.json has pixel_scale=0_255 and
-preprocessing_verified=false. This has NOT been established as the real
+Current config: configs/rice_app.json has pixel_scale=0_1 and
+preprocessing_verified=false. The 0_1 scaling follows the original LiSA-MobileNetV2 scripts/train.py and scripts/evaluate.py,
+both using ImageDataGenerator(rescale=1./255). The user's independent reimplementation
+may differ; this has NOT been established as its exact
 training pipeline. Do not flip the flag by assumption.
 
 Download/extract the ORIGINAL Paddy Doctor train_images to a folder with
@@ -71,7 +73,7 @@ The gate may fail badly on real domain shift; do not quote validation AUROC
 as guaranteed real-world OOD performance.
 
 First export validation predictions after P0 is verified:
-function raw() { [native code] }```powershell
+```powershell
 python scripts/export_rice_validation_predictions.py --dataset-root "D:\paddy\train_images"
 ```
 
@@ -97,3 +99,24 @@ Do not call high Softmax confidence a diagnosis.
 The calibration script also writes models/rice_temperature.json, which the Rice
 inference module loads automatically to rescale scores. This does not modify
 softmax class order, fix preprocessing mismatches, or solve OOD detection.
+
+
+## 2026-10-31 correction — all photos classified as blast at ~100%
+
+Earlier Web configuration passed RGB float32 in 0..255. The original upstream
+training / evaluation scripts use ImageDataGenerator(rescale=1./255), so this
+range is likely incorrect for the LiSA model. It can cause Softmax saturation
+and misleading overconfidence. Changed config pixel_scale to 0_1 as a
+source-grounded provisional fix. The flag preprocessing_verified remains false
+because the user's 15 MB notebook has not been fully inspected.
+
+Compare two normalization settings using a known normal leaf and a disease image:
+
+```powershell
+python scripts/compare_rice_pixel_scales.py --image "D:\paddy\train_images\normal\sample.jpg"
+```
+
+The script logs all 10 probabilities for 0..1 and 0..255; agreement with actual
+notebook predictions must still be checked with verify_rice_inference.py.
+No accuracy claim is made from a single image or from comparing two settings
+without ground truth.

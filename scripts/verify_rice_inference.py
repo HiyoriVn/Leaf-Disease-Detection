@@ -29,7 +29,9 @@ def as_prob(scores):
 
 def prepare(img, method, scale, tf=None):
     img = ImageOps.exif_transpose(img).convert("RGB")
-    if method == "pil_bilinear":
+    if method == "pil_nearest":
+        x = np.asarray(img.resize((224, 224), Image.Resampling.NEAREST), dtype=np.float32)
+    elif method == "pil_bilinear":
         x = np.asarray(img.resize((224, 224), Image.Resampling.BILINEAR), dtype=np.float32)
     elif method == "pil_bicubic":
         x = np.asarray(img.resize((224, 224), Image.Resampling.BICUBIC), dtype=np.float32)
@@ -86,7 +88,7 @@ def main():
         raise RuntimeError(f"Unexpected TFLite output: {outs[0]}")
     reference = np.array([[float(row["p_" + name]) for name in classes] for row in rows])
     scores = []
-    for method in ("pil_bilinear", "pil_bicubic", "tf_bilinear"):
+    for method in ("pil_nearest", "pil_bilinear", "pil_bicubic", "tf_bilinear"):
         for scale in ("0_255", "0_1"):
             ref_err, parity_err, top1_ref, top1_pair = [], [], [], []
             for image, p_ref in zip(images, reference):
