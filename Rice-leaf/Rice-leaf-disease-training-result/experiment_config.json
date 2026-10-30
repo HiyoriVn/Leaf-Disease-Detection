@@ -1,0 +1,36 @@
+{
+  "dataset": "paddy-disease-classification",
+  "dataset_root": "/kaggle/input/competitions/paddy-disease-classification/train_images",
+  "source_code": "https://github.com/ZhijunBioinf/LiSA-MobileNetV2",
+  "label_order": [
+    "bacterial_leaf_blight",
+    "bacterial_leaf_streak",
+    "bacterial_panicle_blight",
+    "blast",
+    "brown_spot",
+    "dead_heart",
+    "downy_mildew",
+    "hispa",
+    "normal",
+    "tungro"
+  ],
+  "seed": 42,
+  "image_size": [
+    224,
+    224
+  ],
+  "global_batch_size": 32,
+  "strategy_replicas": 2,
+  "max_epochs": 80,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "loss": "categorical_crossentropy",
+  "checkpoint_monitor": "val_loss",
+  "split": {
+    "train": 7492,
+    "val": 1874,
+    "test": 1041
+  },
+  "tf_version": "2.20.0",
+  "notes": "Reimplementation of original LiSA architecture; paper split fractions; seed and TF augmentation implementation may differ. Competition test_images are unlabeled and unused."
+}
