@@ -9,7 +9,7 @@ from PIL import Image
 # Import phần xử lý lá sắn sẵn có của bạn bạn
 from src.model_registry import available_models
 
-st.set_page_config(page_title="LeafSense | Plant Health AI", page_icon="🌿", layout="wide")
+st.set_page_config(page_title="LeafSense | Plant Health AI", page_icon="🌾", layout="wide")
 
 ROOT = Path(__file__).resolve().parent
 REGISTRY_PATH = ROOT / "configs" / "plant_model_registry.json"
@@ -20,17 +20,8 @@ def get_available_models(crop: str, coffee_model_path: str):
     return available_models(REGISTRY_PATH, ROOT, crop, coffee_model_path or None)
 
 # --- MENU CHỌN LOẠI CÂY TRỒNG ---
-st.markdown("""<style>
-[data-testid="stAppViewContainer"] {background: #f5f8f7;}
-[data-testid="stSidebar"] {background: #eaf2ef;}
-.block-container {max-width: 1140px; padding-top: 2.0rem;}
-h1,h2,h3 {color: #173c32;}
-div.stButton > button[kind="primary"] {background: #167350; border-color: #167350; border-radius: 11px;}
-div.stButton > button[kind="primary"]:hover {background: #105c40; border-color: #105c40;}
-[data-testid="stMetric"] {background: white; padding: 14px; border: 1px solid #dce7e2; border-radius: 14px;}
-</style>""", unsafe_allow_html=True)
-st.title("🌿 LeafSense — Phân loại bệnh lá cây")
-st.caption("Thị giác máy tính và AI · Sắn, cà phê và lúa · Kết quả chỉ hỗ trợ tham khảo")
+st.title("🌾 LeafSense — Phân loại sức khỏe cây trồng")
+st.caption("Lúa · Sắn · Cà phê | Phân tích ảnh bằng trí tuệ nhân tạo — chỉ hỗ trợ tham khảo")
 
 plant_type = st.sidebar.selectbox(
     "📂 Chọn loại cây cần kiểm tra:",
@@ -101,6 +92,9 @@ elif plant_type == "Lá Sắn (Cassava)":
                 for item in result["top3"]:
                     st.write(f'{item["label"]} — {item["probability"]:.1%}')
                     st.progress(item["probability"])
+                from src.disease_advice import show_advice
+                if not is_cropnet:
+                    show_advice("cassava", result["predicted_label"])
             except (CassavaInferenceError, RuntimeError) as exc:
                 st.error(str(exc))
 
@@ -166,6 +160,8 @@ else:
                     item_label_vi = display_labels.get(item["label"], item["label"])
                     st.write(f"{item_label_vi} — {item['probability']:.1%}")
                     st.progress(item["probability"])
+                from src.disease_advice import show_advice
+                show_advice("coffee", label)
 
                 if label == "Healthy":
                     st.info("Lá cà phê hoàn toàn khỏe mạnh!")
