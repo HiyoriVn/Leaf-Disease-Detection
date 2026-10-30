@@ -1,36 +1,98 @@
-# Khuyến nghị chăm sóc lúa — Rice / LiSA
+# Sổ tay quản lý bệnh và sâu hại lúa — LiSA
 
-> Lưu ý: dự đoán ảnh không xác nhận tác nhân, mức bệnh, thiếu dinh dưỡng hay tình trạng ruộng. Phân bón phải theo phân tích đất/lá và giai đoạn sinh trưởng; thuốc BVTV chỉ áp dụng nếu sản phẩm được phép dùng tại Việt Nam, đúng cây, đúng bệnh, theo nhãn và cán bộ chuyên môn. Không có liều phân/thuốc hợp lệ chung từ một ảnh.
+**Cách sử dụng:** Đối chiếu triệu chứng trên ruộng, xác định tác nhân và tình trạng cây trước khi xử lý. Phần dinh dưỡng là biện pháp hỗ trợ sinh trưởng, không thay thế xử lý tác nhân bệnh. Hoạt chất nêu dưới đây được dẫn từ tài liệu chuyên ngành; khi lựa chọn thuốc cần kiểm tra đúng thương phẩm, đối tượng lúa/bệnh, nhãn và danh mục Việt Nam hiện hành (liên kết cuối tài liệu).
 
 ## bacterial_leaf_blight
-**Bạc lá vi khuẩn.** Kiểm tra vết cháy lan dọc mép lá, tiền sử mưa bão và ngập. Ưu tiên giống chống chịu, hạt giống khỏe, xử lý tàn dư bệnh, không bón thừa đạm; bón N–P–K cân đối theo ruộng. Không mặc định thuốc nấm chữa được vi khuẩn. [IRRI](https://www.knowledgebank.irri.org/).
+
+**Bạc lá vi khuẩn — Xanthomonas oryzae pv. oryzae.**
+- **Nhận biết:** cháy từ chóp và mép lá, lan thành dải trắng xám, ranh giới gợn sóng; ẩm cao có thể thấy giọt dịch khuẩn. Mưa gió, rách lá và bón đạm quá mức làm tăng nguy cơ.
+- **Xử lý canh tác:** kiểm tra ngay sau mưa bão, vệ sinh tàn dư, dùng giống ít nhiễm; hạn chế tổn thương lá và theo dõi vết bệnh mới.
+- **Phân bón:** tạm ngừng bón đạm và phân bón lá nhiều N khi bệnh phát triển; sau khi bệnh ổn định mới bón N–P–K cân đối theo giai đoạn.
+- **BVTV:** ưu tiên sản phẩm có đăng ký **bạc lá vi khuẩn/lúa**; thuốc nấm trị đạo ôn không thay thế thuốc xử lý vi khuẩn.
+- **Nguồn Việt Nam:** [Trung tâm Khuyến nông Quốc gia – Phòng trừ bạc lá](https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/phong-tru-benh-bac-la-hai-lua-19117.html).
 
 ## bacterial_leaf_streak
-**Sọc trong vi khuẩn.** Soi ngược sáng tìm sọc trong mờ giữa gân lá. Quản lý hạt giống, gốc rạ, cỏ ký chủ, tưới tiêu và bón đạm cân đối.  [IRRI – Leaf streak](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Leaf_streak.htm).
+
+**Đốm sọc vi khuẩn — Xanthomonas oryzae pv. oryzicola.**
+- **Nhận biết:** sọc nhỏ, dài, hơi trong mờ giữa các gân lá, vàng rồi nâu; phát triển mạnh trong điều kiện nóng ẩm, sau mưa.
+- **Canh tác:** chọn giống khỏe, làm sạch tàn dư và cỏ ký chủ, hạn chế sạ dày; thăm đồng sau gió mạnh làm rách lá.
+- **Dinh dưỡng:** tránh thừa đạm, duy trì K và P theo nhu cầu cây, không dùng phân bón lá làm cách chữa vi khuẩn.
+- **BVTV:** chỉ chọn sản phẩm đúng đăng ký đốm sọc vi khuẩn trên lúa; không suy diễn rằng mọi sản phẩm cho bạc lá đều dùng được.
+- **Nguồn Việt Nam:** [Cục BVTV – Sinh vật gây hại lúa sau bão](https://khuyennongvn.gov.vn/du-lieu-khuyen-nong/van-ban-thong-bao/bo-nn-ptnt/cong-van-so-1973-bvtv-tv-v-v-chu-dong-phong-chong-sinh-vat-gay-hai-lua-sau-bao-28178.html); [Khuyến nông – Lúa mùa](https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/mot-so-bien-phap-ky-thuat-de-san-xuat-lua-mua-hieu-qua-15803.html).
 
 ## bacterial_panicle_blight
-**Cháy bông vi khuẩn.** Ảnh lá đơn lẻ không đủ chẩn đoán; cần ảnh bông, vỏ hạt và giai đoạn trổ. Điều chỉnh thời vụ và giống thích hợp địa phương, tránh quá nhiều đạm, dùng giống sạch; chưa có thuốc trị bệnh tự động có thể đề xuất chỉ từ ảnh. [IRRI – Rice diseases](https://rice-diseases.irri.org/contents).
+
+**Cháy bông vi khuẩn — thường liên quan Burkholderia glumae.**
+- **Nhận biết:** bông lép, vỏ trấu biến màu nâu; phải xem **bông và hạt** để phân biệt với đạo ôn cổ bông, nóng lúc trổ hoặc lép do sâu.
+- **Canh tác:** dùng hạt giống khỏe, điều chỉnh thời vụ, vệ sinh đồng ruộng; kiểm tra cả ruộng ở giai đoạn trổ và chắc hạt.
+- **Dinh dưỡng:** tránh bón thừa đạm muộn, bón K theo nhu cầu; không có loại phân nào diệt vi khuẩn trên bông.
+- **BVTV:** xác định đúng tác nhân trước khi chọn biện pháp; thuốc trị đạo ôn không mặc nhiên kiểm soát được bệnh do vi khuẩn.
+- **Nguồn chuyên ngành:** [IRRI – Rice Diseases](https://rice-diseases.irri.org/contents). Chưa có nguồn khuyến nông Việt Nam đủ cụ thể để khẳng định một phác đồ hóa học chung.
 
 ## blast
-**Đạo ôn.** Tìm vết thoi, tâm xám viền nâu; kiểm tra thêm cổ bông. Ưu tiên giống chống chịu, quản lý nước và thời vụ; tránh thừa đạm, chia lượng đạm theo khuyến cáo. Chỉ cân nhắc thuốc trừ nấm đã đăng ký cho đạo ôn khi cần sau xác nhận thực địa. [IRRI – Blast](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Blast_%28Leaf_and_Collar%29.htm).
+
+**Đạo ôn — Magnaporthe oryzae / Pyricularia oryzae.**
+- **Nhận biết:** đốm hình thoi, tâm xám trắng, viền nâu; bệnh nặng tạo đám cháy lá, có thể gây hại cổ bông. Thường mạnh khi ẩm cao và ruộng xanh rậm.
+- **Canh tác:** thăm đồng thường xuyên, dùng giống chống chịu, giữ nước phù hợp và vệ sinh lúa chét/cỏ bờ; theo dõi sát giai đoạn đòng–trỗ.
+- **Dinh dưỡng:** khi có bệnh đang lan, **dừng thúc đạm, phân bón lá và chất kích thích**; về sau bón N–P–K cân đối, cân nhắc Ca/Si theo chương trình dinh dưỡng địa phương.
+- **BVTV:** tài liệu khuyến nông có nêu **tricyclazole, isoprothiolane, fenoxanil** trong quản lý đạo ôn. Chọn chế phẩm hiện có đăng ký cho đạo ôn/lúa; phun theo nhãn, theo dõi lại và luân phiên nhóm thuốc.
+- **Nguồn Việt Nam:** [Khuyến nông – Hướng dẫn xử lý đạo ôn](https://khuyennongvn.gov.vn/tu-van-hoi-dap/xu-ly-khi-lua-co-bieu-hien-cua-benh-dao-on-21844.html), [Phòng trừ đạo ôn](https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/phong-tru-benh-dao-on-hai-lua-21414.html).
 
 ## brown_spot
-**Đốm nâu.** Phân biệt với đạo ôn bằng dạng đốm và điều kiện ruộng. Ưu tiên quản lý độ phì: đo dinh dưỡng đất, bổ sung các chất thiếu (có thể gồm K hoặc Si nếu khảo sát địa phương xác nhận); dùng giống và hạt giống khỏe. Thuốc xử lý hạt chỉ khi được phép và có chỉ định. [IRRI – Brown spot](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Brown_spot.htm).
+
+**Đốm nâu — Bipolaris oryzae.**
+- **Nhận biết:** đốm bầu dục nâu, đôi khi tâm nhạt/quầng vàng; thường rõ khi ruộng nghèo dinh dưỡng hoặc cây suy.
+- **Canh tác:** chọn hạt giống khỏe, quản lý tàn dư, nước tưới và độ phì đất; phân biệt với vết hình thoi của đạo ôn.
+- **Dinh dưỡng:** rà soát K, P, pH và nguồn cung Si trong đất; bổ sung thành phần thiếu theo phân tích và quy trình canh tác, không mặc định phải bón tất cả.
+- **BVTV:** ưu tiên quản lý dinh dưỡng và giống; chỉ xử lý hạt/thuốc nấm khi xác định đúng bệnh và có sản phẩm đăng ký phù hợp.
+- **Nguồn chuyên ngành:** [IRRI – Brown spot](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Brown_spot.htm), [IRRI Knowledge Bank](https://www.knowledgebank.irri.org/).
 
 ## dead_heart
-**Chết đọt/héo nõn là triệu chứng, thường liên quan sâu đục thân, không phải tên bệnh nấm.** Kiểm tra lỗ đục, sâu và nõn chết trên cây. Quản lý rơm rạ, trồng đồng loạt, bảo tồn thiên địch, theo dõi ngưỡng sâu hại; không bón thừa đạm. Thuốc trừ sâu chỉ khi xác định loài/giai đoạn và ngưỡng kinh tế. [IRRI – Rice Doctor](https://www.knowledgebank.irri.org/decision-tools/rice-doctor).
+
+**Héo nõn/chết đọt — triệu chứng thường liên quan sâu đục thân lúa, không phải bệnh nấm.**
+- **Nhận biết:** dảnh giữa khô héo, kéo nõn dễ rút; bổ thân tìm lỗ đục, phân sâu, sâu non. Giai đoạn trỗ có thể xuất hiện bông bạc.
+- **Canh tác:** kiểm tra ổ trứng, ngắt ổ trứng/dảnh hại khi phù hợp; đồng loạt thời vụ và xử lý gốc rạ sau thu hoạch.
+- **Dinh dưỡng:** không bón đạm vượt nhu cầu; bón cân đối N–P–K theo sinh trưởng.
+- **BVTV:** xử lý sâu đục thân khi mật độ/ổ trứng vượt ngưỡng hướng dẫn và sâu còn ở giai đoạn dễ tiếp xúc; chọn thuốc đăng ký **sâu đục thân/lúa**, không dùng thuốc trừ nấm.
+- **Nguồn Việt Nam:** [Khuyến nông – Sâu cắn phá lúa làm đòng](https://khuyennongvn.gov.vn/tu-van-hoi-dap/bien-phap-phong-tru-sau-can-pha-lua-giai-doan-lam-dong-9733.html).
 
 ## downy_mildew
-**Sương mai lúa.** Quan sát lá non, mầm, biến dạng và triệu chứng trên nhiều cây; nên lấy mẫu xác nhận tác nhân. Ưu tiên giống/hạt giống khỏe, vệ sinh đồng ruộng, quản lý nước; không có phân bón đặc hiệu chữa bệnh. Không đề xuất hóa chất khi chưa xác nhận. [IRRI – Rice diseases](https://rice-diseases.irri.org/contents).
+
+**Sương mai lúa — Sclerophthora macrospora (Oomycetes).**
+- **Nhận biết:** lá bất thường, có thể dày/biến dạng, cây còi hoặc bông bất thường; đốm vàng đơn thuần chưa đủ xác nhận bệnh.
+- **Canh tác:** kiểm tra nhiều cây và lịch sử ngập úng; hạn chế ứ đọng nước kéo dài, dùng nguồn giống khỏe và quản lý tàn dư.
+- **Dinh dưỡng:** duy trì N–P–K cân đối; không có loại phân được chứng minh là thuốc đặc trị sương mai.
+- **BVTV:** phải đối chiếu sản phẩm đăng ký đúng đối tượng sương mai trên lúa, không dùng quy trình đạo ôn để thay thế.
+- **Nguồn:** [IRRI – Rice Diseases](https://rice-diseases.irri.org/contents). Cần xác nhận nguồn bệnh địa phương trước khi chọn thuốc.
 
 ## hispa
-**Sâu gai lúa là côn trùng, không phải bệnh.** Soi lá tìm vệt trắng bị cạo, trứng/sâu non và bọ trưởng thành; thu gom cơ học ở giai đoạn sớm nếu phù hợp, quản lý lúa chét. IRRI khuyến nghị tránh thúc đạm khi mật độ cao, chỉ bón lại khi đã kiểm soát. Thuốc trừ sâu chỉ khi đúng đối tượng và ngưỡng kinh tế. [IRRI – Control of rice insect pests](https://www.knowledgebank.irri.org/ericeproduction/PDF_%26_Docs/Control_of_rice_insect_pests.pdf).
+
+**Sâu gai lúa — Dicladispa armigera; đây là côn trùng hại, không phải bệnh.**
+- **Nhận biết:** vệt trắng dạng cạo trên lá và đường đục giữa biểu bì; quan sát bọ trưởng thành có gai, ấu trùng trong lá.
+- **Canh tác:** kiểm tra mức hại, thu gom cơ học khi ổ hại nhỏ, quản lý lúa chét/cỏ và bảo vệ thiên địch.
+- **Dinh dưỡng:** tránh thúc đạm nhiều khi sâu đang phát triển mạnh; sau kiểm soát, bón phục hồi theo nhu cầu cây.
+- **BVTV:** nếu vượt ngưỡng xử lý, chọn thuốc trừ côn trùng đúng đăng ký **sâu gai/lúa**, không dùng thuốc nấm.
+- **Nguồn:** [IRRI – Rice insect pest management](https://www.knowledgebank.irri.org/ericeproduction/PDF_%26_Docs/Control_of_rice_insect_pests.pdf).
 
 ## normal
-**Không thấy dấu hiệu thuộc 9 nhóm bệnh/hại trong ảnh, không đồng nghĩa cây hoàn toàn khỏe.** Kiểm tra thân, rễ, bông và theo dõi diễn biến; giữ nước, quản lý cỏ, bón cân đối theo đất, không phun thuốc chỉ từ nhãn normal. [IRRI Knowledge Bank](https://www.knowledgebank.irri.org/).
+
+**Lúa khỏe mạnh theo nhãn mô hình (không phát hiện 9 nhóm bệnh/hại còn lại).**
+- **Theo dõi:** thăm ruộng định kỳ, kiểm tra lá non/lá già/thân/bông và rễ khi nghi thiếu dinh dưỡng.
+- **Dinh dưỡng:** bón N–P–K theo giống, màu lá, đất và giai đoạn; chỉ bổ sung vi lượng nếu có căn cứ.
+- **BVTV:** ưu tiên IPM và chăm sóc ruộng; không phun thuốc do nhãn normal.
+- **Nguồn Việt Nam:** [Khuyến nông – Kỹ thuật lúa mùa](https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/mot-so-bien-phap-ky-thuat-de-san-xuat-lua-mua-hieu-qua-15803.html).
 
 ## tungro
-**Vàng lùn Tungro là bệnh virus do rầy xanh truyền.** Kiểm tra cây lùn, lá vàng/cam và rầy xanh. Trồng giống kháng, gieo trồng đồng loạt, dọn lúa chét và giám sát môi giới. Không có thuốc nấm hoặc phân bón chữa virus; chỉ quản lý rầy theo IPM và đánh giá thực địa. [PhilRice – Tungro](https://dbmp.philrice.gov.ph/FAQs/src/search.php).
 
-## Nguồn và phạm vi
-IRRI Rice Knowledge Bank, Rice Diseases Online Resource, PhilRice. Các khuyến nghị từ tài liệu quốc tế cần đối chiếu quy định nông nghiệp địa phương trước khi áp dụng.
+**Bệnh Tungro do virus, lây chủ yếu qua rầy xanh. Không đồng nhất với vàng lùn–lùn xoắn lá do rầy nâu được báo cáo tại Việt Nam.**
+- **Nhận biết:** cây lùn, lá vàng đến vàng cam, đẻ nhánh yếu; kiểm tra quần thể rầy xanh và chẩn đoán phân biệt thiếu dinh dưỡng.
+- **Canh tác:** dùng giống chống chịu, gieo đồng loạt, quản lý lúa chét và cây nhiễm, giám sát môi giới truyền virus.
+- **Dinh dưỡng:** bón cân đối để duy trì sinh trưởng; **không có phân hoặc thuốc nấm diệt virus** trong cây.
+- **BVTV:** chỉ xử lý rầy xanh theo mật độ, nguy cơ truyền bệnh và đăng ký trên lúa; không nhầm thuốc trừ rầy nâu với chỉ định rầy xanh.
+- **Nguồn:** [IRRI – Rice Doctor](https://www.knowledgebank.irri.org/decision-tools/rice-doctor); [Khuyến nông – IPM lúa](https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/mot-so-bien-phap-ky-thuat-de-san-xuat-lua-mua-hieu-qua-15803.html).
+
+## Tài liệu pháp lý và chuyên môn
+
+- [Danh mục thuốc BVTV Việt Nam – Thông tư 75/2025/TT-BNNMT, có hiệu lực 10/02/2026](https://chinhphu.vn/?classid=1&docid=216337&pageid=27160&typegroupid=6).
+- [Thông tư 28/2026/TT-BNNMT sửa đổi, có hiệu lực 15/08/2026](https://www.ppd.gov.vn/van-ban-chinh-sach/thong-tu-282026tt-bnnmt-ngay-3062026-sua-doi--bo-sung-thong-tu-so-752025tt-bnnmt.html).
+- [Khuyến nông Quốc gia](https://khuyennongvn.gov.vn/), [IRRI Rice Knowledge Bank](https://www.knowledgebank.irri.org/). Không dùng một hoạt chất chỉ vì xuất hiện trong tài liệu cũ nếu hiện không còn được đăng ký đúng đối tượng.
