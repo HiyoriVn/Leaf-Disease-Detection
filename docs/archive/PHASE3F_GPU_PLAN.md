@@ -1,6 +1,6 @@
 # Phase 3F — Controlled diagnosis and RTX 3060 plan
 
-The supplied Phase 3E final GPU archive was verified: baseline, V2 and V3 have the same ordered 3,210 IDs/labels, all five probability columns and matching checkpoint/manifest hashes. Verified class results and paired errors are in [report 19](../reports/19_phase3e_results.md) and [report 17](../reports/17_cassava_model_comparison.md). Existing V2/V3 probability means (50/50 and 25/75) are computed; neither beats V3 macro-F1. The controlled hypotheses and pipeline audit are in [report 20](../reports/20_phase3f_diagnosis.md). No PC run is launched automatically.
+The supplied Phase 3E final GPU archive was verified: baseline, V2 and V3 have the same ordered 3,210 IDs/labels, all five probability columns and matching checkpoint/manifest hashes. Verified class results and paired errors are in [report 19](../reports/archive/19_phase3e_results.md) and [report 17](../reports/archive/17_cassava_model_comparison.md). Existing V2/V3 probability means (50/50 and 25/75) are computed; neither beats V3 macro-F1. The controlled hypotheses and pipeline audit are in [report 20](../reports/archive/20_phase3f_diagnosis.md). No PC run is launched automatically.
 
 ## Transfer source-only updates to `D:\CassavaWork`
 
@@ -77,4 +77,4 @@ The evaluator checks the model-specific checkpoint SHA and frozen manifest hash,
 
 ## Measured compute references
 
-The available local GTX 1650 Max-Q MobileNet run took 1,358.46 seconds for eight epochs; this is not a B3/RTX 3060 estimate. The PC B3 training epoch logs were not supplied, so do not extrapolate exact full-training time for V4/V5/B4. Each PC pilot and first full epoch should record elapsed time and peak VRAM; use that measured timing to plan the remaining epochs. See [report 20](../reports/20_phase3f_diagnosis.md).
+The available local GTX 1650 Max-Q MobileNet run took 1,358.46 seconds for eight epochs; this is not a B3/RTX 3060 estimate. The PC B3 training epoch logs were not supplied, so do not extrapolate exact full-training time for V4/V5/B4. Each PC pilot and first full epoch should record elapsed time and peak VRAM; use that measured timing to plan the remaining epochs. See [report 20](../reports/archive/20_phase3f_diagnosis.md).
