@@ -6,7 +6,7 @@
 **Bạc lá vi khuẩn.** Kiểm tra vết cháy lan dọc mép lá, tiền sử mưa bão và ngập. Ưu tiên giống chống chịu, hạt giống khỏe, xử lý tàn dư bệnh, không bón thừa đạm; bón N–P–K cân đối theo ruộng. Không mặc định thuốc nấm chữa được vi khuẩn. [IRRI](https://www.knowledgebank.irri.org/).
 
 ## bacterial_leaf_streak
-**Sọc trong vi khuẩn.** Soi ngược sáng tìm sọc trong mờ giữa gân lá. Quản lý hạt giống, gốc rạ, cỏ ký chủ, tưới tiêu và bón đạm cân đối. Tài liệu IRRI đề cập thuốc gốc đồng trong một số tình huống nặng, không suy ra đơn thuốc cho Việt Nam. [IRRI – Leaf streak](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Leaf_streak.htm).
+**Sọc trong vi khuẩn.** Soi ngược sáng tìm sọc trong mờ giữa gân lá. Quản lý hạt giống, gốc rạ, cỏ ký chủ, tưới tiêu và bón đạm cân đối.  [IRRI – Leaf streak](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Leaf_streak.htm).
 
 ## bacterial_panicle_blight
 **Cháy bông vi khuẩn.** Ảnh lá đơn lẻ không đủ chẩn đoán; cần ảnh bông, vỏ hạt và giai đoạn trổ. Điều chỉnh thời vụ và giống thích hợp địa phương, tránh quá nhiều đạm, dùng giống sạch; chưa có thuốc trị bệnh tự động có thể đề xuất chỉ từ ảnh. [IRRI – Rice diseases](https://rice-diseases.irri.org/contents).
