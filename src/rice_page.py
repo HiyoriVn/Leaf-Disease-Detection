@@ -96,6 +96,7 @@ def _process(image, config, gate):
             "top1": result["predicted_label"],
             "confidence": result["confidence"],
             "probability_sum": float(sum(result["probabilities"])),
+            "all_probabilities": {label: float(prob) for label, prob in zip(config.labels, result["probabilities"])},
             "temperature_calibrated": result.get("temperature_calibrated", False),
         }
         step("Suy luận", True, f"{result['predicted_label']} · {result['confidence']:.2%}")
@@ -162,6 +163,7 @@ def render_rice_page():
                 with st.status("Đang kiểm tra đầu vào và chạy LiSA...", expanded=True) as status:
                     t0 = time.perf_counter()
                     gate = check_rice_image(image)
+                    gate_elapsed_ms = round((time.perf_counter()-t0)*1000, 2)
                     st.write("Kiểm tra đầu vào:", gate.status, "—", gate.reason)
                     if gate.status == "reject":
                         st.session_state["rice_last_report"] = {
@@ -176,7 +178,7 @@ def render_rice_page():
                             st.write("Bộ lọc OOD chưa hiệu chỉnh: chạy LiSA để kiểm thử, không xác nhận đây là lá lúa.")
                         st.write("Bắt đầu kiểm tra file, tensor đầu vào và TFLite...")
                         result, log = _process(image, config, gate)
-                        log["timings_ms"]["quality_gate"] = round((time.perf_counter()-t0)*1000, 2)
+                        log["timings_ms"]["quality_gate"] = gate_elapsed_ms
                         st.session_state["rice_last_report"] = {
                             "image_key": image_key, "result": result, "log": log,
                         }
