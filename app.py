@@ -49,6 +49,8 @@ plant_type = st.sidebar.selectbox(
     key="crop_selector",
 )
 crop_ui = CROP_MODES[plant_type]
+# Streamlit >= 1.46 supports additive page-config calls: update the browser tab per crop.
+st.set_page_config(page_title=f'LeafSense | {crop_ui["title"]}', page_icon=crop_ui["icon"])
 
 if st.session_state.get("_last_leafsense_crop") != plant_type:
     st.session_state.pop("rice_last_report", None)
