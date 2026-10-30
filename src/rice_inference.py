@@ -121,13 +121,31 @@ def predict_rice(image: Image.Image, interpreter, config: RiceConfig) -> dict:
         else:
             exp = np.exp(scores - scores.max())
             probabilities = exp / exp.sum()
+        # Optional temperature learned on a validation split, never on TEST.
+        temperature_path = ROOT / "models" / "rice_temperature.json"
+        temperature_applied = False
+        if temperature_path.is_file():
+            try:
+                calibration = json.loads(temperature_path.read_text(encoding="utf-8"))
+                if calibration.get("schema_version") != 1:
+                    raise ValueError("Unsupported calibration schema")
+                temperature = float(calibration["temperature"])
+                if not np.isfinite(temperature) or temperature <= 0:
+                    raise ValueError("Invalid temperature")
+                logp = np.log(np.clip(probabilities, 1e-12, 1.0)) / temperature
+                exps = np.exp(logp - logp.max())
+                probabilities = exps / exps.sum()
+                temperature_applied = True
+            except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+                raise RiceInferenceError(f"Cấu hình hiệu chỉnh LiSA không hợp lệ: {exc}") from exc
         order = np.argsort(-probabilities)
         top3 = [{"label": config.labels[int(i)], "probability": float(probabilities[i])}
                 for i in order[:3]]
         return {"predicted_label": top3[0]["label"],
                 "confidence": top3[0]["probability"],
                 "top3": top3, "probabilities": probabilities.tolist(),
-                "preprocessing_verified": config.preprocessing_verified}
+                "preprocessing_verified": config.preprocessing_verified,
+                "temperature_calibrated": temperature_applied}
     except RiceInferenceError:
         raise
     except Exception as exc:

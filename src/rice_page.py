@@ -112,8 +112,12 @@ def render_rice_page() -> None:
                     st.caption("KẾT QUẢ SUY LUẬN")
                 st.markdown(f"### {name}")
                 st.caption(result["predicted_label"])
-                st.metric("Điểm Softmax · không phải độ chắc chắn chẩn đoán",
+                st.metric("Điểm dự đoán · không phải độ chắc chắn chẩn đoán",
                           f"{result['confidence']:.1%}")
+                if result.get("temperature_calibrated"):
+                    st.caption("Điểm đã hiệu chỉnh nhiệt độ từ tập validation.")
+                else:
+                    st.caption("Điểm Softmax chưa được hiệu chỉnh.")
                 st.markdown("**Top 3 kết quả**")
                 for item in result["top3"]:
                     st.write(f"{DISPLAY.get(item['label'], item['label'])} — {item['probability']:.1%}")

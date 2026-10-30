@@ -88,3 +88,7 @@ its full contents. The assistant has not executed Keras/TFLite parity against
 original images or trained/evaluated the OOD gate. Thus P0/P1/P2 have working
 verification/evaluation tooling, not independently validated results.
 Do not call high Softmax confidence a diagnosis.
+
+The calibration script also writes models/rice_temperature.json, which the Rice
+inference module loads automatically to rescale scores. This does not modify
+softmax class order, fix preprocessing mismatches, or solve OOD detection.

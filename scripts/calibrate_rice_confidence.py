@@ -68,6 +68,8 @@ def main():
     ap.add_argument("--class-json", type=Path, default=Path(
         "Rice-leaf/riceLeafDisease_trainingResult/class_names.json"))
     ap.add_argument("--out", type=Path, default=Path("reports/rice_calibration_local.json"))
+    ap.add_argument("--deploy", type=Path, default=Path("models/rice_temperature.json"),
+                    help="Validated temperature JSON loaded by the Web App")
     args = ap.parse_args()
     if args.val_csv.resolve() == args.test_csv.resolve():
         raise SystemExit("Refusing to calibrate using the test CSV.")
@@ -87,7 +89,16 @@ def main():
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    deploy = {
+        "schema_version": 1, "temperature": t,
+        "fit_source": str(args.val_csv),
+        "validation_n": int(len(yv)),
+        "warning": "Temperature rescales scores, not OOD validity.",
+    }
+    args.deploy.parent.mkdir(parents=True, exist_ok=True)
+    args.deploy.write_text(json.dumps(deploy, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(out, ensure_ascii=False, indent=2))
+    print("Deployed calibration:", args.deploy)
 
 
 if __name__ == "__main__":

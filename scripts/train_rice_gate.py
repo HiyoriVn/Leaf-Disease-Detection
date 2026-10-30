@@ -5,6 +5,9 @@ diagnose disease. Train only on representative rice AND non-rice examples.
 This small handcrafted feature baseline requires independent evaluation.
 """
 from __future__ import annotations
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import argparse
 import json
 from pathlib import Path
