@@ -109,7 +109,7 @@ def _process(image, config, gate):
 
 
 def render_rice_page():
-    st.subheader("🌾 Phân tích bệnh và triệu chứng trên lúa")
+    st.markdown("**Phân tích ảnh lá lúa · LiSA-MobileNetV2**")
     st.caption("LiSA-MobileNetV2 · 10 nhãn · Ảnh RGB, kích thước bất kỳ")
 
     try:

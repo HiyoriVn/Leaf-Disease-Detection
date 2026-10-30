@@ -9,7 +9,7 @@ from PIL import Image
 # Import phần xử lý lá sắn sẵn có của bạn bạn
 from src.model_registry import available_models
 
-st.set_page_config(page_title="LeafSense | Plant Health AI", page_icon="🌾", layout="wide")
+st.set_page_config(page_title="LeafSense | Plant Health AI", page_icon="🌱", layout="wide")
 
 ROOT = Path(__file__).resolve().parent
 REGISTRY_PATH = ROOT / "configs" / "plant_model_registry.json"
@@ -19,14 +19,45 @@ REGISTRY_PATH = ROOT / "configs" / "plant_model_registry.json"
 def get_available_models(crop: str, coffee_model_path: str):
     return available_models(REGISTRY_PATH, ROOT, crop, coffee_model_path or None)
 
-# --- MENU CHỌN LOẠI CÂY TRỒNG ---
-st.title("🌾 LeafSense — Phân loại sức khỏe cây trồng")
-st.caption("Lúa · Sắn · Cà phê | Phân tích ảnh bằng trí tuệ nhân tạo — chỉ hỗ trợ tham khảo")
+# Một giao diện, ngữ cảnh riêng cho từng loại cây.
+CROP_MODES = {
+    "Lá Lúa (Rice)": {
+        "icon": "🌾",
+        "title": "Nhận diện bệnh trên lúa",
+        "sidebar": "🌾 Lúa (Rice)",
+        "description": "LiSA TFLite · 10 nhóm bệnh, triệu chứng và trạng thái",
+    },
+    "Lá Sắn (Cassava)": {
+        "icon": "🌿",
+        "title": "Nhận diện bệnh trên lá sắn",
+        "sidebar": "🌿 Sắn (Cassava)",
+        "description": "MobileNetV3 / CropNet · Các nhóm bệnh lá sắn",
+    },
+    "Lá Cà Phê (Coffee)": {
+        "icon": "☕",
+        "title": "Nhận diện bệnh trên lá cà phê",
+        "sidebar": "☕ Cà phê (Coffee)",
+        "description": "ResNet18 · 4 nhóm bệnh và trạng thái lá cà phê",
+    },
+}
 
+st.sidebar.title("LeafSense")
 plant_type = st.sidebar.selectbox(
-    "📂 Chọn loại cây cần kiểm tra:",
-    ("Lá Lúa (Rice)", "Lá Sắn (Cassava)", "Lá Cà Phê (Coffee)")
+    "Chọn loại cây cần kiểm tra",
+    options=tuple(CROP_MODES),
+    format_func=lambda key: CROP_MODES[key]["sidebar"],
+    key="crop_selector",
 )
+crop_ui = CROP_MODES[plant_type]
+
+if st.session_state.get("_last_leafsense_crop") != plant_type:
+    st.session_state.pop("rice_last_report", None)
+    st.session_state["_last_leafsense_crop"] = plant_type
+
+st.title("LeafSense")
+st.subheader(f'{crop_ui["icon"]} {crop_ui["title"]}')
+st.caption(crop_ui["description"])
+st.sidebar.caption("Chế độ đang chọn: " + crop_ui["title"])
 
 # ==========================================
 # 1. NẾU NGƯỜI DÙNG CHỌN: LÁ SẮN (CASSAVA)
@@ -48,10 +79,15 @@ elif plant_type == "Lá Sắn (Cassava)":
     def get_cassava_model(config_path: str):
         return load_cassava_model(load_config(Path(config_path)))
 
-    st.subheader("🥔 Chẩn đoán bệnh trên lá Sắn")
+    st.markdown("**Phân tích ảnh lá sắn · 5 lớp (model nội bộ)**")
     model_choice = st.selectbox("Chọn mô hình Cassava", list(MODEL_OPTIONS)) if MODEL_OPTIONS else None
     if not MODEL_OPTIONS:
-        st.warning("Chưa có checkpoint Cassava hợp lệ. Hãy tải checkpoint theo hướng dẫn trong README.")
+        st.warning("Chưa sẵn sàng: chưa tìm thấy checkpoint hợp lệ của mô hình lá sắn.")
+        st.info("Đặt checkpoint theo đường dẫn và SHA-256 trong README.md, sau đó khởi động lại ứng dụng. Không thể phân tích ảnh sắn khi chưa có model.")
+        with st.expander("5 lớp của model sắn"):
+            for label in load_config(ROOT / "configs" / "cassava_app.json").class_names:
+                st.write(label)
+        st.stop()
     is_cropnet = model_choice == CROPNET_OPTION
     selected_model = MODEL_OPTIONS.get(model_choice) if model_choice else None
     config_path = selected_model["config_path"] if selected_model else ROOT / "configs" / "cassava_app.json"
@@ -107,18 +143,19 @@ elif plant_type == "Lá Sắn (Cassava)":
 # ==========================================
 else:
     from src.coffee_inference import CoffeeInferenceError, load_coffee_model, predict_coffee
-    st.subheader("☕ Chẩn đoán bệnh trên lá Cà phê ")
-    st.write("Tải lên ảnh chụp lá cà phê để AI nhận diện các bệnh (Cerscospora, Leaf rust, Phoma, Healthy).")
-    st.caption("💡 **Mẹo:** Để đạt độ chính xác cao nhất, hãy chụp/chọn ảnh cận cảnh 1 chiếc lá cà phê, rõ vết bệnh và hạn chế dính bàn tay hoặc phông nền quá phức tạp.")
+    st.markdown("**Phân tích ảnh lá cà phê · 4 lớp**")
+    st.write("Mô hình cà phê hỗ trợ các nhãn Cerscospora, Leaf rust, Phoma và Healthy.")
+    st.caption("Mẹo ảnh cà phê: chụp rõ cả hai mặt lá, đủ sáng và hạn chế nền phức tạp.")
     coffee_override = os.environ.get("COFFEE_MODEL_PATH", "")
     available_coffee_models = get_available_models("coffee", coffee_override)
     COFFEE_OPTIONS = {entry["label"]: entry for entry in available_coffee_models}
     coffee_choice = st.selectbox("Chọn mô hình Coffee", list(COFFEE_OPTIONS)) if COFFEE_OPTIONS else None
     selected_coffee_model = COFFEE_OPTIONS.get(coffee_choice) if coffee_choice else None
     if selected_coffee_model is None:
-        st.warning("Chưa có checkpoint Coffee hợp lệ. Đặt file theo hướng dẫn trong README.")
-    else:
-        st.caption(selected_coffee_model["evaluation_note"])
+        st.warning("Chưa sẵn sàng: chưa tìm thấy checkpoint hợp lệ của mô hình lá cà phê.")
+        st.info("Đặt checkpoint theo README.md hoặc cấu hình COFFEE_MODEL_PATH. Khi chưa có model, không thể phân tích ảnh cà phê.")
+        st.stop()
+    st.caption(selected_coffee_model["evaluation_note"])
 
     @st.cache_resource(show_spinner=False)
     def get_coffee_model(model_path: str, expected_sha256: str, expected_classes: tuple[str, ...]):
@@ -164,7 +201,7 @@ else:
                 show_advice("coffee", label)
 
                 if label == "Healthy":
-                    st.info("Lá cà phê hoàn toàn khỏe mạnh!")
+                    st.info("Mô hình dự đoán lớp Healthy trong 4 nhóm được hỗ trợ.")
                 else:
                     st.warning("Phát hiện triệu chứng bệnh trên lá cà phê. Nên kiểm tra để phòng trừ kịp thời.")
             except CoffeeInferenceError as exc:
