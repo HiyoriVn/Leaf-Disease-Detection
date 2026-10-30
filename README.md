@@ -1,6 +1,6 @@
 # Cassava Leaf Disease Detection — Capstone
 
-Ứng dụng Streamlit phân loại **lá sắn** bằng checkpoint MobileNetV3-Small đã kiểm chứng ở Phase 2. Ứng dụng hỗ trợ tải ảnh hoặc chụp bằng camera, xem ảnh, dự đoán một trong năm lớp của mô hình mặc định, độ tin cậy softmax và ba khả năng cao nhất. CropNet là lựa chọn thử nghiệm riêng với sáu lớp khi đã cài. Kết quả là dự đoán AI, không phải chẩn đoán nông nghiệp đã xác nhận.
+Ứng dụng Streamlit phân loại **lá sắn và lá cà phê**. Cassava giữ các checkpoint và luồng inference riêng; Coffee dùng ResNet18 cùng file checkpoint riêng. Ứng dụng hỗ trợ tải ảnh, xem dự đoán, confidence softmax và ba khả năng cao nhất. CropNet là lựa chọn thử nghiệm riêng cho Cassava. Kết quả là dự đoán AI, không phải chẩn đoán nông nghiệp đã xác nhận.
 
 ## Chạy ứng dụng trên Windows PowerShell
 
@@ -21,6 +21,8 @@ Trong **Chọn mô hình Cassava**, checkpoint công bố vẫn là mặc địn
 Đặt checkpoint đã kiểm chứng tại `checkpoints/cassava_mobilenetv3_best.pth` trước khi dự đoán. Ứng dụng đối chiếu SHA-256 với `configs/cassava_app.json` và báo lỗi rõ nếu thiếu/sai trọng số. Checkpoint không được commit. Xem [hướng dẫn sử dụng](docs/CASSAVA_APP_GUIDE.md) để tải đúng bản và xử lý lỗi.
 
 ## Kiểm thử
+
+Coffee cần checkpoint `coffee_model.pth` được cung cấp riêng vì trọng số không được commit vào Git. Đặt file tại `models/coffee_model.pth`, hoặc cấu hình biến môi trường `COFFEE_MODEL_PATH` trỏ tới file trước khi khởi chạy app. App kiểm tra checkpoint khi người dùng yêu cầu dự đoán và báo lỗi rõ nếu file không dùng được.
 
 ```powershell
 .\.venv-phase2\Scripts\python.exe -m pytest -q --basetemp .pytest-tmp\phase3a tests\test_cassava_app.py tests\test_contract.py
