@@ -70,10 +70,15 @@ examples of logos, objects, people, other leaves, rice in field backgrounds.
 The gate may fail badly on real domain shift; do not quote validation AUROC
 as guaranteed real-world OOD performance.
 
+First export validation predictions after P0 is verified:
+function raw() { [native code] }```powershell
+python scripts/export_rice_validation_predictions.py --dataset-root "D:\paddy\train_images"
+```
+
 Softmax calibration uses validation prediction CSV for temperature fitting,
 test prediction CSV only for measurement:
 ```powershell
-python scripts/calibrate_rice_confidence.py --val-csv "D:\data\val_predictions.csv" --test-csv "Rice-leaf\riceLeafDisease_trainingResult\test_predictions.csv"
+python scripts/calibrate_rice_confidence.py --val-csv "reports/val_predictions.csv" --test-csv "Rice-leaf\riceLeafDisease_trainingResult\test_predictions.csv"
 ```
 
 The repository already has test_predictions.csv but does not have
