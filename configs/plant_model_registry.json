@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "release_artifact_policy": "Keep weights out of Git history. Prepare GitHub Release assets only after model and dataset redistribution rights are verified.",
+  "release_artifact_policy": "Checkpoint binaries may be attached to a public GitHub Release only after redistribution rights are documented. Current Cassava team and Coffee candidates are verified locally but blocked from public upload pending rights/provenance confirmation.",
   "models": [
     {
       "id": "cassava-published-mobilenetv3",
@@ -38,7 +38,10 @@
       "preprocessing": "RGB; OpenCV INTER_AREA resize 256, center crop 224, ImageNet mean/std",
       "metrics": {"status": "verified project internal-test artifact, same-source Kaggle data", "n": 3209, "accuracy": 0.8180118416952321, "macro_f1": 0.7011231770946892, "balanced_accuracy": 0.7038590771568207},
       "evaluation_note": "No exact SHA/group overlap across frozen splits; near-duplicate or same-plant exposure remains possible; no external field validation.",
-      "license_status": "Project-trained weights; source-data and pretrained-weight redistribution terms need review before release."
+      "license_status": "Project-trained weights; source-data and pretrained-weight redistribution terms need review before release.",
+      "release_asset_filename": "cassava_mobilenetv3_finetuned.pth",
+      "release_status": "blocked_rights_unverified",
+      "release_blocker": "Derived from Kaggle competition data; applicable data and derived-weight redistribution permissions have not been confirmed."
     },
     {
       "id": "cassava-efficientnet-b3-baseline",
@@ -63,7 +66,7 @@
       "id": "cassava-efficientnet-b3-v3",
       "crop": "cassava",
       "label": "EfficientNet-B3 V3 (unavailable locally)",
-      "enabled": true,
+      "enabled": false,
       "config": "configs/cassava_efficientnet_b3_v3_app.json",
       "sha256": "0e76a24e1d979ee29f508b83fe6059f89f7a13a167effcaddc3eacfea0cf669c",
       "checkpoint_filename": "cassava_efficientnet_b3_v3.pth",
@@ -75,8 +78,10 @@
       "pretrained_source": "ImageNet-1K timm efficientnet_b3.ra2_in1k",
       "preprocessing": "RGB; OpenCV INTER_CUBIC resize 343, center crop 300, ImageNet mean/std",
       "metrics": {"status": "verified supplied validation predictions and checkpoint hash; reproduction pending locally", "n": 3210, "accuracy": 0.83551402, "macro_f1": 0.71245032, "balanced_accuracy": 0.70484034},
-      "evaluation_note": "Same-source validation used in model selection; not an independent field test. Checkpoint not present in this checkout, so app will not offer it.",
-      "license_status": "Project-trained weights; source-data and pretrained-weight redistribution terms need review before release."
+      "evaluation_note": "Same-source validation used in model selection; not an independent field test. Checkpoint not present in this checkout, so app will not offer it. Removed from the demo model list at user request; historical config and research record are retained.",
+      "license_status": "Project-trained weights; source-data and pretrained-weight redistribution terms need review before release.",
+      "demo_required": false,
+      "release_status": "out_of_demo_scope_checkpoint_missing"
     },
     {
       "id": "coffee-resnet18",
@@ -97,7 +102,10 @@
       "preprocessing": "RGB; resize 224x224; ToTensor; ImageNet mean/std",
       "metrics": null,
       "evaluation_note": "Checkpoint hash, class mapping and local inference smoke test verified. No accuracy claim; checkpoint contains no reproducible validation split metadata.",
-      "license_status": "Unknown for the supplied checkpoint and its training-data derivative; do not redistribute until confirmed."
+      "license_status": "Unknown for the supplied checkpoint and its training-data derivative; do not redistribute until confirmed.",
+      "release_asset_filename": "coffee_model.pth",
+      "release_status": "blocked_provenance_and_rights_unverified",
+      "release_blocker": "The checkpoint origin, exact training dataset/version, and checkpoint redistribution terms are undocumented."
     }
   ],
   "not_available": [

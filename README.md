@@ -1,53 +1,56 @@
 # Cassava and Coffee Leaf Disease Detection
 
-Streamlit demo for image classification of cassava and coffee leaves. The app supports image upload and camera capture, and reports model scores as predictions rather than confirmed agricultural diagnoses.
+A Streamlit demo for Cassava and Coffee leaf image classification. Predictions are decision support and are not confirmed agricultural diagnoses.
 
-## Run the app
+## Clone and install
 
-Requirements: Windows, Python 3.13. From the repository folder:
+Requirements: Windows and Python 3.13. From a clean clone:
 
 ```powershell
+git clone https://github.com/HiyoriVn/Leaf-Disease-Detection.git
+cd Leaf-Disease-Detection
 py -3.13 -m venv .venv-phase2
 .\.venv-phase2\Scripts\python.exe -m pip install -r requirements-app.txt
-.\.venv-phase2\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
 ```
 
-Open <http://127.0.0.1:8501>.
+## Checkpoint availability
 
-The app only offers checkpoints that are present and match the SHA-256 recorded in the model configuration. Checkpoints are excluded from Git. See [Cassava app guide](docs/CASSAVA_APP_GUIDE.md) for obtaining and installing Cassava weights.
+The current [Phase 4 source release](https://github.com/HiyoriVn/Leaf-Disease-Detection/releases/tag/phase4-integration) contains source archives only. **It has no downloadable model weights.** The local candidate checkpoints below were hash and inference checked, but they are not uploaded because redistribution rights are not documented.
 
-Coffee requires the separately supplied ResNet18 checkpoint. Set its location before starting Streamlit:
+| Demo model | Expected local path | SHA-256 | Status |
+|---|---|---|---|
+| Team fine-tuned Cassava MobileNetV3-Small | `checkpoints/experiments/full_backbone_smooth_20261028/best.pth` | `7cb54b7de90ec775eb346a0a5ade31dfcdac7fff2e03db5264c1aa8c6fc98cd0` | Locally verified; public release blocked pending Kaggle data and derived-weight permission review |
+| Coffee ResNet18 | `models/coffee_model.pth`, or path in `COFFEE_MODEL_PATH` | `12f958c9c08b0cc0b13311e86a23f1089c3e3476a8984a87db79cfd78f884900` | Locally verified; public release blocked because checkpoint source, training data, and redistribution terms are undocumented |
+
+`checksums.sha256` records the candidate file hashes for later verification. It does not indicate that these files are downloadable release assets. Published Cassava weights and EfficientNet-B3 baseline are also present locally, but are not selected as release assets; their data and derived-weight terms have not been confirmed. The missing EfficientNet-B3 V3 checkpoint is out of demo scope; its research configuration and findings remain archived.
+
+## Install approved checkpoints
+
+After obtaining an approved checkpoint from a future model release or another authorized source, copy the Cassava file to the exact path in the table above. Put Coffee at `models/coffee_model.pth` or set its external path:
 
 ```powershell
 $env:COFFEE_MODEL_PATH = 'C:\path\to\coffee_model.pth'
+```
+
+Verify candidate hashes before running:
+
+```powershell
+Get-FileHash .\checkpoints\experiments\full_backbone_smooth_20261028\best.pth -Algorithm SHA256
+Get-FileHash .\models\coffee_model.pth -Algorithm SHA256
+```
+
+The app validates checkpoint SHA-256, architecture, preprocessing, and class order using `configs/plant_model_registry.json` and the model-specific configs. Cassava uses `timm mobilenetv3_small_100`, RGB, OpenCV `INTER_AREA` resize 256, center crop 224, and ImageNet mean/std. Its five output labels are CBB, CBSD, CGM (Cassava Green Mottle), CMD, and Healthy. Coffee uses torchvision ResNet18, RGB resize 224×224, ImageNet mean/std, and its checkpoint's four-class order: `Cerscospora`, `Healthy`, `Leaf rust`, `Phoma`.
+
+## Run and test
+
+```powershell
 .\.venv-phase2\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
 ```
 
-The Coffee checkpoint hash and four class labels are checked against [the model registry](configs/plant_model_registry.json). Its redistribution permission is unknown, so it is not included in this repository or a release.
-
-## Model status
-
-| Model | Local status | Evaluation status |
-|---|---|---|
-| Cassava MobileNetV3 published | Checkpoint verified; default | Author-reported metrics, same-source data |
-| Cassava MobileNetV3 fine-tuned | Checkpoint verified | Internal test: 81.80% accuracy, 0.7011 macro-F1; same-source Kaggle |
-| Cassava EfficientNet-B3 baseline | Checkpoint verified; optional | Validation: 83.12% accuracy, 0.7052 macro-F1; not external field data |
-| Cassava EfficientNet-B3 V3 | Not present in checkout | Validation artifact: 83.55% accuracy, 0.71245 macro-F1; inference unavailable without checkpoint |
-| Coffee ResNet18 | External file required | No verified accuracy metric |
-| Rice | Not integrated | No compatible verified checkpoint |
-
-Model and data limitations are detailed in [Phase 4 integration notes](reports/21_phase4_integration.md). No checkpoint is currently cleared for public redistribution; dataset and derived-weight terms need confirmation before attaching weights to a GitHub Release.
-
-## Development
-
-Install app dependencies with `python -m pip install -r requirements-app.txt`. Run the integration suite with:
+Open <http://127.0.0.1:8501>. To run the integration suite:
 
 ```powershell
 .\.venv-phase2\Scripts\python.exe -m pytest -q --basetemp .pytest-tmp\phase4
 ```
 
-Training dependencies and the Windows GPU workflow are documented in [Windows GPU training](docs/WINDOWS_GPU_TRAINING.md). Cassava app details are in [the app guide](docs/CASSAVA_APP_GUIDE.md); the older TorchScript contract is described in [the model and data contract](docs/MODEL_AND_DATA_CONTRACT.md).
-
-## Research archive
-
-Historical phase plans, dataset audits, training results, and validation reports are retained under [`reports/archive/`](reports/archive/). Superseded operational notes are under [`docs/archive/`](docs/archive/). Start with the current app and training guides above.
+See [Cassava app guide](docs/CASSAVA_APP_GUIDE.md), [Windows GPU training](docs/WINDOWS_GPU_TRAINING.md), [Phase 4 integration notes](reports/21_phase4_integration.md), and [model release audit](reports/22_model_release_audit.md). Historical experiments remain under [`reports/archive/`](reports/archive/).
