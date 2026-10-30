@@ -1,4 +1,4 @@
-# Hướng dẫn ứng dụng nhận diện bệnh lá sắn
+# Hướng dẫn ứng dụng nhận diện bệnh lá Cassava và Coffee
 
 ## Chuẩn bị
 
@@ -29,6 +29,15 @@ Mở [http://127.0.0.1:8501](http://127.0.0.1:8501), chọn **Tải ảnh lên**
 
 Ứng dụng hiển thị lớp dự đoán, xác suất softmax của lớp đó và ba lớp có xác suất cao nhất. Xác suất cao không bảo đảm chẩn đoán đúng. Kết quả chỉ hỗ trợ tham khảo; nên hỏi chuyên gia nông nghiệp trước khi xử lý cây.
 
+Để bật Coffee, đặt file `coffee_model.pth` được cấp riêng và hash khớp registry. Trên máy này:
+
+```powershell
+$env:COFFEE_MODEL_PATH = 'C:\Users\Admin\Downloads\coffee_model.pth'
+python -m streamlit run app.py --server.address 127.0.0.1
+```
+
+Coffee dùng ResNet18, resize 224×224 và class order trong checkpoint (`Cerscospora`, `Healthy`, `Leaf rust`, `Phoma`). Registry kiểm tra SHA-256 và mapping trước khi liệt kê model. Chưa có metric Coffee đã xác minh; không diễn giải softmax như accuracy.
+
 Ứng dụng có bốn tùy chọn khi CropNet được cài (nếu không, ba mô hình PyTorch). Checkpoint công bố vẫn mặc định. Model fine-tuned MobileNet có kết quả internal test cùng nguồn Kaggle (accuracy 81,8%, macro-F1 0,701), không phải kiểm định ngoài thực địa. EfficientNet-B3 dùng ảnh 300×300 và SHA-256 `7924296913c5f3a6c9d822212cdb0a8326b6d5c4cd2778078d6c47bebd0d406b`; checkpoint đã strict-load và chạy trên ảnh thật. Các metric 83,12% accuracy / 0,7052 macro-F1 đang được ghi là số validation do PC báo, chờ chạy lại validation 3.210 ảnh. Hướng dẫn runner nằm trong `docs/WINDOWS_GPU_VALIDATION.md`. CropNet vẫn là thử nghiệm taxonomy sáu lớp, không có metric local hợp lệ. Không so confidence giữa các mô hình.
 
 ## Lỗi thường gặp
@@ -39,4 +48,4 @@ Mở [http://127.0.0.1:8501](http://127.0.0.1:8501), chọn **Tải ảnh lên**
 - **Camera bị chặn:** cấp quyền camera trong trình duyệt nếu bạn muốn chụp trực tiếp, hoặc dùng chức năng tải ảnh lên.
 - **Không thể nạp model:** kiểm tra các phiên bản trong `requirements-app.txt` và nội dung lỗi; state_dict phải khớp nghiêm ngặt với kiến trúc, hash, nhãn và preprocessing của model đã chọn.
 
-Ứng dụng chạy suy luận CPU. Các bộ dữ liệu Rice và Coffee chưa được hỗ trợ trong UI này.
+Ứng dụng chạy suy luận CPU và chỉ liệt kê model có checkpoint tại chỗ cùng SHA-256 khớp registry. Rice chưa có checkpoint/inference adapter tương thích. B3-V3 được cấu hình làm ứng viên, nhưng sẽ không hiện cho đến khi tải đúng file có SHA-256 đã biết; B3 baseline hiện tại không phải B3-V3.

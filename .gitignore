@@ -16,7 +16,6 @@ transfer/
 .tmp-train/
 .tmp-cropnet/
 
-
-#
+# Local datasets and the separately distributed coffee checkpoint
 dataset/
 models/coffee_model.pth

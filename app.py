@@ -12,10 +12,17 @@ from src.cropnet_bridge import CLASS_NAMES as CROPNET_CLASSES, available as crop
 
 # Import phần xử lý lá cà phê do bạn phụ trách
 from src.coffee_inference import CoffeeInferenceError, load_coffee_model, predict_coffee
+from src.model_registry import available_models
 
 st.set_page_config(page_title="Phân loại bệnh lá cây AI", page_icon="🌿", layout="centered")
 
 ROOT = Path(__file__).resolve().parent
+REGISTRY_PATH = ROOT / "configs" / "plant_model_registry.json"
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def get_available_models(crop: str, coffee_model_path: str):
+    return available_models(REGISTRY_PATH, ROOT, crop, coffee_model_path or None)
 
 # --- MENU CHỌN LOẠI CÂY TRỒNG ---
 st.title("🌿 Hệ thống Phân loại Bệnh Cây Trồng bằng AI")
@@ -31,11 +38,8 @@ plant_type = st.sidebar.selectbox(
 # 1. NẾU NGƯỜI DÙNG CHỌN: LÁ SẮN (CASSAVA)
 # ==========================================
 if plant_type == "Lá Sắn (Cassava)":
-    MODEL_OPTIONS = {
-        "Checkpoint công bố (mặc định)": ROOT / "configs" / "cassava_app.json",
-        "Mô hình nhóm fine-tune (thử nghiệm)": ROOT / "configs" / "cassava_finetuned_app.json",
-        "EfficientNet-B3 (Fine-tuned by our team)": ROOT / "configs" / "cassava_efficientnet_b3_app.json",
-    }
+    available_cassava_models = get_available_models("cassava", "")
+    MODEL_OPTIONS = {entry["label"]: entry for entry in available_cassava_models}
     CROPNET_OPTION = "Google CropNet (thử nghiệm, 6 lớp)"
     if cropnet_available():
         MODEL_OPTIONS[CROPNET_OPTION] = None
@@ -45,18 +49,18 @@ if plant_type == "Lá Sắn (Cassava)":
         return load_cassava_model(load_config(Path(config_path)))
 
     st.subheader("🥔 Chẩn đoán bệnh trên lá Sắn")
-    model_choice = st.selectbox("Chọn mô hình Cassava", list(MODEL_OPTIONS))
+    model_choice = st.selectbox("Chọn mô hình Cassava", list(MODEL_OPTIONS)) if MODEL_OPTIONS else None
+    if not MODEL_OPTIONS:
+        st.warning("Chưa có checkpoint Cassava hợp lệ. Hãy tải checkpoint theo hướng dẫn trong README.")
     is_cropnet = model_choice == CROPNET_OPTION
-    model_config = load_config(MODEL_OPTIONS[model_choice] or MODEL_OPTIONS["Checkpoint công bố (mặc định)"])
+    selected_model = MODEL_OPTIONS.get(model_choice) if model_choice else None
+    config_path = selected_model["config_path"] if selected_model else ROOT / "configs" / "cassava_app.json"
+    model_config = load_config(Path(config_path))
 
     if is_cropnet:
         st.caption("CropNet dùng nhãn Green Mite và thêm Unknown; nhãn local là Green Mottle. Đây là chế độ khám phá, chưa có metric đánh giá hợp lệ trên dữ liệu local. Lần đầu suy luận có thể chậm do TensorFlow khởi động.")
-    elif model_choice == "EfficientNet-B3 (Fine-tuned by our team)":
-        st.caption("EfficientNet-B3 · ImageNet pretrained, fine-tuned trên Cassava · input 300×300 · validation accuracy 83,12%, macro-F1 0,7052 (chờ tái lập). Đây là validation cùng nguồn, không phải internal test hay ảnh thực địa độc lập.")
-    elif model_choice == "Mô hình nhóm fine-tune (thử nghiệm)":
-        st.caption("Mô hình mới: accuracy 81,8%, macro-F1 0,701 trên internal test cùng nguồn Kaggle; chưa kiểm định ngoài thực địa.")
-    else:
-        st.caption("Checkpoint công bố: đánh giá trên dữ liệu cùng nguồn huấn luyện có nguy cơ trùng lặp; giữ làm lựa chọn mặc định.")
+    elif selected_model:
+        st.caption(selected_model["evaluation_note"])
 
     with st.expander("Mẹo chụp ảnh rõ hơn"):
         st.write("Chụp một lá sắn rõ nét, đủ sáng, ít che khuất và để lá chiếm phần lớn khung hình.")
@@ -78,7 +82,10 @@ if plant_type == "Lá Sắn (Cassava)":
         else:
             try:
                 with st.spinner("Đang phân tích ảnh sắn…"):
-                    result = predict_cropnet(source.getvalue()) if is_cropnet else predict_image(image, get_cassava_model(str(MODEL_OPTIONS[model_choice])), model_config)
+                    if selected_model is None and not is_cropnet:
+                        st.warning("Chưa có checkpoint Cassava hợp lệ để dự đoán.")
+                        st.stop()
+                    result = predict_cropnet(source.getvalue()) if is_cropnet else predict_image(image, get_cassava_model(str(config_path)), model_config)
                 st.subheader(result["predicted_label"])
                 st.metric("Độ tin cậy của mô hình", f'{result["confidence"]:.1%}')
                 st.markdown("**Ba khả năng cao nhất**")
@@ -99,23 +106,22 @@ else:
     st.subheader("☕ Chẩn đoán bệnh trên lá Cà phê ")
     st.write("Tải lên ảnh chụp lá cà phê để AI nhận diện các bệnh (Cerscospora, Leaf rust, Phoma, Healthy).")
     st.caption("💡 **Mẹo:** Để đạt độ chính xác cao nhất, hãy chụp/chọn ảnh cận cảnh 1 chiếc lá cà phê, rõ vết bệnh và hạn chế dính bàn tay hoặc phông nền quá phức tạp.")
-    # 1. Định nghĩa từ điển chuyển đổi tên bệnh sang Tiếng Việt
-    COFFEE_VIETNAMESE_NAMES = {
-        "Cerscospora": "Bệnh đốm lá (Cercospora)",
-        "Healthy": "Lá khỏe mạnh (Không bệnh)",
-        "Leaf rust": "Bệnh rỉ sắt (Leaf rust)",
-        "Phoma": "Bệnh Phoma"
-    }
-
-    COFFEE_MODEL_PATH = Path(
-        os.environ.get("COFFEE_MODEL_PATH", ROOT / "models" / "coffee_model.pth")
-    )
+    coffee_override = os.environ.get("COFFEE_MODEL_PATH", "")
+    available_coffee_models = get_available_models("coffee", coffee_override)
+    COFFEE_OPTIONS = {entry["label"]: entry for entry in available_coffee_models}
+    coffee_choice = st.selectbox("Chọn mô hình Coffee", list(COFFEE_OPTIONS)) if COFFEE_OPTIONS else None
+    selected_coffee_model = COFFEE_OPTIONS.get(coffee_choice) if coffee_choice else None
+    if selected_coffee_model is None:
+        st.warning("Chưa có checkpoint Coffee hợp lệ. Đặt file theo hướng dẫn trong README.")
+    else:
+        st.caption(selected_coffee_model["evaluation_note"])
 
     @st.cache_resource(show_spinner=False)
-    def get_coffee_model(model_path: str):
-        return load_coffee_model(Path(model_path))
+    def get_coffee_model(model_path: str, expected_sha256: str, expected_classes: tuple[str, ...]):
+        return load_coffee_model(Path(model_path), expected_sha256, list(expected_classes))
 
-    coffee_source = st.file_uploader("Chọn ảnh lá cà phê", type=["jpg", "jpeg", "png", "webp"], key="coffee_file_uploader_unique")
+    coffee_method = st.radio("Chọn nguồn ảnh cà phê", ["Tải ảnh lên", "Chụp bằng camera"], horizontal=True, key="coffee_method")
+    coffee_source = st.file_uploader("Chọn ảnh lá cà phê", type=["jpg", "jpeg", "png", "webp"], key="coffee_file_uploader_unique") if coffee_method == "Tải ảnh lên" else st.camera_input("Chụp ảnh lá cà phê", key="coffee_camera")
 
     coffee_image = None
     if coffee_source is not None:
@@ -131,15 +137,23 @@ else:
         else:
             try:
                 with st.spinner("Đang phân tích ảnh cà phê…"):
-                    coffee_model, coffee_classes = get_coffee_model(str(COFFEE_MODEL_PATH))
+                    if selected_coffee_model is None:
+                        st.warning("Chưa có checkpoint Coffee hợp lệ để dự đoán.")
+                        st.stop()
+                    coffee_model, coffee_classes = get_coffee_model(
+                        str(selected_coffee_model["checkpoint_path"]),
+                        selected_coffee_model["sha256"],
+                        tuple(selected_coffee_model["class_names"]),
+                    )
                     label, score, top3_list = predict_coffee(coffee_image, coffee_model, coffee_classes)
 
-                display_label = COFFEE_VIETNAMESE_NAMES.get(label, label)
+                display_labels = selected_coffee_model.get("display_labels", {})
+                display_label = display_labels.get(label, label)
                 st.subheader(f"Kết quả: {display_label}")
                 st.metric("Độ tin cậy của mô hình", f"{score:.2f}%")
                 st.markdown("**Ba khả năng cao nhất:**")
                 for item in top3_list:
-                    item_label_vi = COFFEE_VIETNAMESE_NAMES.get(item["label"], item["label"])
+                    item_label_vi = display_labels.get(item["label"], item["label"])
                     st.write(f"{item_label_vi} — {item['probability']:.1%}")
                     st.progress(item["probability"])
 

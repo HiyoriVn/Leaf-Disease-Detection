@@ -20,12 +20,42 @@ Trong **Chọn mô hình Cassava**, checkpoint công bố vẫn là mặc địn
 
 Đặt checkpoint đã kiểm chứng tại `checkpoints/cassava_mobilenetv3_best.pth` trước khi dự đoán. Ứng dụng đối chiếu SHA-256 với `configs/cassava_app.json` và báo lỗi rõ nếu thiếu/sai trọng số. Checkpoint không được commit. Xem [hướng dẫn sử dụng](docs/CASSAVA_APP_GUIDE.md) để tải đúng bản và xử lý lỗi.
 
-## Kiểm thử
+## Coffee và model registry
 
-Coffee cần checkpoint `coffee_model.pth` được cung cấp riêng vì trọng số không được commit vào Git. Đặt file tại `models/coffee_model.pth`, hoặc cấu hình biến môi trường `COFFEE_MODEL_PATH` trỏ tới file trước khi khởi chạy app. App kiểm tra checkpoint khi người dùng yêu cầu dự đoán và báo lỗi rõ nếu file không dùng được.
+Coffee dùng ResNet18 với bốn lớp theo đúng thứ tự trong checkpoint: `Cerscospora`, `Healthy`, `Leaf rust`, `Phoma`. Checkpoint được cung cấp riêng, không commit vào Git. Để chạy với file người dùng đã cung cấp trên Windows PowerShell:
+
+```powershell
+$env:COFFEE_MODEL_PATH = 'C:\Users\Admin\Downloads\coffee_model.pth'
+python -m streamlit run app.py --server.address 127.0.0.1
+```
+
+Registry `configs/plant_model_registry.json` là nguồn metadata cho model selection, hash, architecture, class mapping, preprocessing và metric provenance. App chỉ liệt kê checkpoint có mặt và hash đúng. Các model Cassava dùng config riêng vì mỗi kiến trúc có preprocessing riêng. B3-V3 được ghi nhận trong registry, nhưng chưa xuất hiện trong menu vì checkpoint SHA-256 `0e76a24e…cf669c` chưa có trong checkout này. File `checkpoints/cassava_efficientnet_b3_best_full.pth` là B3 baseline SHA-256 `79242969…d406b`, không phải V3.
+
+`models/manifest.json` là hợp đồng TorchScript cũ dùng bởi `src/inference.py`/`src/evaluate.py`; nó có nhãn rỗng và không phải danh sách checkpoint đang dùng trong Streamlit. Không xem các mục Rice/Coffee trong manifest cũ là model đã tích hợp.
+
+Chưa công bố checkpoint nào trong GitHub Release. GitHub Releases phù hợp hơn Git LFS cho vài binary model vì không đưa trọng số vào Git history hay buộc người dùng cài Git LFS; mỗi release asset phải nhỏ hơn 2 GiB ([GitHub Releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases)). Các model hiện đều nhỏ hơn giới hạn này. Việc phát hành chờ xác minh quyền phân phối: license của Coffee checkpoint/data chưa được cung cấp; quyền phát hành Cassava fine-tuned weights và dataset gốc cũng cần được xác nhận. Chỉ tải weights khi có release được phê duyệt và kiểm tra SHA-256 theo registry.
+
+| Crop / model | Checkpoint trong checkout | Metric được hiển thị | Trạng thái demo |
+|---|---|---|---|
+| Cassava published MobileNetV3-Small | Có, 6.2 MB | Tác giả báo cáo; cùng nguồn dữ liệu | Inference hash-verified |
+| Cassava team MobileNetV3-Small | Có, 6.2 MB | Internal test: accuracy 81.80%, macro-F1 0.7011 | Inference hash-verified |
+| Cassava EfficientNet-B3 baseline | Có, 43.3 MB | Validation: accuracy 83.12%, macro-F1 0.7052 | Inference hash-verified; chưa đổi default |
+| Cassava EfficientNet-B3 V3 | Không | Validation artifact: accuracy 83.55%, macro-F1 0.71245 | Không chọn được đến khi có checkpoint/hash đúng |
+| Coffee ResNet18 | File riêng, 44.8 MB | Không có metric xác minh | Inference smoke-tested; 4 lớp từ checkpoint |
+| Rice | Không | — | Chưa hỗ trợ; không có model giả |
+
+Không có đánh giá Coffee accuracy trong PR/checkpoint. Coffee validation script cần checkpoint huấn luyện có split cố định mới; model được cung cấp hiện tại không có split metadata, nên chưa thể tái lập metric từ checkpoint này.
+
+## Kiểm thử
 
 ```powershell
 .\.venv-phase2\Scripts\python.exe -m pytest -q --basetemp .pytest-tmp\phase3a tests\test_cassava_app.py tests\test_contract.py
+```
+
+Chạy toàn bộ kiểm thử tích hợp hiện có:
+
+```powershell
+\.venv-phase2\Scripts\python.exe -m pytest -q --basetemp .pytest-tmp\phase4
 ```
 
 Bài test so sánh năm dự đoán trên cùng ảnh với [smoke test Phase 2](reports/smoke_cassava/predictions.csv) khi checkpoint, dữ liệu và CSV có mặt. Những ảnh này có thể đã nằm trong dữ liệu huấn luyện checkpoint, nên **không** dùng các dự đoán đó để tính accuracy độc lập.
@@ -38,7 +68,7 @@ Bài test so sánh năm dự đoán trên cùng ảnh với [smoke test Phase 2]
 - `requirements-app.txt`: các thư viện đã dùng trong môi trường thử nghiệm.
 - `reports/10_phase3a_implementation.md`: kết quả triển khai và thử nghiệm thực tế.
 
-Phase 1 và 2 được ghi trong `reports/`; các manifest nằm tại `manifests/`. Mã TorchScript cũ trong `src/inference.py` vẫn dành cho hợp đồng model riêng và không được ứng dụng Cassava hiện tại gọi. Rice và Coffee chưa tích hợp vào ứng dụng; không có fine-tuning trong Phase 3A.
+Phase 1–4 được ghi trong `reports/`; các manifest dữ liệu nằm tại `manifests/`. Mã TorchScript cũ trong `src/inference.py` vẫn dành cho hợp đồng model riêng và không được app Cassava/Coffee gọi. Rice chưa có checkpoint và inference adapter tương thích nên chưa xuất hiện trong app.
 
 ## Phase 3B: huấn luyện và đánh giá Cassava
 

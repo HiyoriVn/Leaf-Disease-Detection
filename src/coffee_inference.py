@@ -1,6 +1,7 @@
 """Inference helpers for the coffee leaf disease ResNet18 checkpoint."""
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import torch
@@ -13,12 +14,20 @@ class CoffeeInferenceError(RuntimeError):
     """Raised when the coffee checkpoint cannot be loaded or used."""
 
 
-def load_coffee_model(model_path: Path) -> tuple[nn.Module, list[str]]:
+def load_coffee_model(
+    model_path: Path,
+    expected_sha256: str | None = None,
+    expected_class_names: list[str] | None = None,
+) -> tuple[nn.Module, list[str]]:
     """Load and validate a CPU checkpoint; cache this result in the app."""
     if not model_path.is_file():
         raise CoffeeInferenceError(f"Không tìm thấy model cà phê: {model_path}")
 
     try:
+        if expected_sha256 is not None:
+            digest = hashlib.sha256(model_path.read_bytes()).hexdigest()
+            if digest != expected_sha256:
+                raise ValueError("SHA-256 checkpoint không khớp registry")
         checkpoint = torch.load(model_path, map_location="cpu", weights_only=True)
         class_names = checkpoint["class_names"]
         state_dict = checkpoint["model_state_dict"]
@@ -26,6 +35,8 @@ def load_coffee_model(model_path: Path) -> tuple[nn.Module, list[str]]:
             isinstance(name, str) and name for name in class_names
         ):
             raise ValueError("class_names không hợp lệ")
+        if expected_class_names is not None and class_names != expected_class_names:
+            raise ValueError("class_names checkpoint không khớp registry")
 
         model = models.resnet18(weights=None)
         model.fc = nn.Linear(model.fc.in_features, len(class_names))
@@ -54,7 +65,14 @@ def predict_coffee(
     try:
         input_tensor = _PREPROCESS(image.convert("RGB")).unsqueeze(0)
         with torch.inference_mode():
-            probabilities = torch.softmax(model(input_tensor), dim=1)[0]
+            logits = model(input_tensor)
+            if not isinstance(logits, torch.Tensor) or tuple(logits.shape) != (1, len(class_names)):
+                raise ValueError("Số đầu ra của model không khớp số lớp")
+            if not torch.isfinite(logits).all():
+                raise ValueError("Model trả về logits không hữu hạn")
+            probabilities = torch.softmax(logits[0], dim=0)
+        if not torch.isfinite(probabilities).all():
+            raise ValueError("Model trả về xác suất không hữu hạn")
         if probabilities.numel() != len(class_names):
             raise ValueError("Số đầu ra của model không khớp số lớp")
 

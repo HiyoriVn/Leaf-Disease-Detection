@@ -1,0 +1,23 @@
+{
+  "model_id": "cassava-efficientnet-b3-v3-20261030",
+  "checkpoint": "checkpoints/cassava_efficientnet_b3_v3.pth",
+  "checkpoint_sha256": "0e76a24e1d979ee29f508b83fe6059f89f7a13a167effcaddc3eacfea0cf669c",
+  "architecture": "efficientnet_b3.ra2_in1k",
+  "num_classes": 5,
+  "class_names": [
+    "Cassava Bacterial Blight (CBB)",
+    "Cassava Brown Streak Disease (CBSD)",
+    "Cassava Green Mottle (CGM)",
+    "Cassava Mosaic Disease (CMD)",
+    "Healthy"
+  ],
+  "preprocessing": {
+    "resize": 343,
+    "crop": 300,
+    "interpolation": "INTER_CUBIC",
+    "mean": [0.485, 0.456, 0.406],
+    "std": [0.229, 0.224, 0.225]
+  },
+  "max_upload_bytes": 20000000,
+  "max_pixels": 24000000
+}
