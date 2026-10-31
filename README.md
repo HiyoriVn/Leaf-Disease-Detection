@@ -54,3 +54,11 @@ Open <http://127.0.0.1:8501>. To run the integration suite:
 ```
 
 See [Cassava app guide](docs/CASSAVA_APP_GUIDE.md), [Windows GPU training](docs/WINDOWS_GPU_TRAINING.md), [Phase 4 integration notes](reports/21_phase4_integration.md), and [model release audit](reports/22_model_release_audit.md). Historical experiments remain under [`reports/archive/`](reports/archive/).
+
+## Deploy on Streamlit Community Cloud
+
+1. Open [share.streamlit.io](https://share.streamlit.io) and create an app from this GitHub repository.
+2. Select branch `codex/streamlit-deploy` and entrypoint `app.py`.
+3. Streamlit installs the app dependencies from `requirements.txt` and provides a public `streamlit.app` link to share with the class.
+
+This branch includes the Coffee ResNet18 checkpoint in `models/coffee_model.pth` and the Cassava checkpoints tracked on the current `main` branch. The app checks the configured SHA-256 and class mapping before offering a model. Rice inference is a demo only: preprocessing remains unverified and the quality gate is uncalibrated. Do not treat Rice predictions as validated diagnoses. The Phase 4 GitHub Release remains source-only; Coffee and Cassava checkpoint files are in the repository branch.
