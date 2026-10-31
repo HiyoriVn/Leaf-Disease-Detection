@@ -47,13 +47,16 @@
 - **BVTV:** ưu tiên quản lý dinh dưỡng và giống; chỉ xử lý hạt/thuốc nấm khi xác định đúng bệnh và có sản phẩm đăng ký phù hợp.
 - **Nguồn chuyên ngành:** [IRRI – Brown spot](https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Brown_spot.htm), [IRRI Knowledge Bank](https://www.knowledgebank.irri.org/).
 
+
 ## dead_heart
 
-**Héo nõn/chết đọt — triệu chứng thường liên quan sâu đục thân lúa, không phải bệnh nấm.**
-- **Nhận biết:** dảnh giữa khô héo, kéo nõn dễ rút; bổ thân tìm lỗ đục, phân sâu, sâu non. Giai đoạn trỗ có thể xuất hiện bông bạc.
-- **Canh tác:** kiểm tra ổ trứng, ngắt ổ trứng/dảnh hại khi phù hợp; đồng loạt thời vụ và xử lý gốc rạ sau thu hoạch.
-- **Dinh dưỡng:** không bón đạm vượt nhu cầu; bón cân đối N–P–K theo sinh trưởng.
-- **BVTV:** xử lý sâu đục thân khi mật độ/ổ trứng vượt ngưỡng hướng dẫn và sâu còn ở giai đoạn dễ tiếp xúc; chọn thuốc đăng ký **sâu đục thân/lúa**, không dùng thuốc trừ nấm.
+**Héo nõn/chết đọt — thường do sâu đục thân lúa phá hoại.** Đây là **triệu chứng**, không phải tên một bệnh nấm.
+
+- **Dấu hiệu nhận biết:** lá non mọc ở giữa một thân lúa bị vàng, khô héo và chết. Khi kéo nhẹ lá non đã héo, lá có thể tuột ra dễ dàng. Nếu tách phần thân **đã bị hại** để quan sát, có thể thấy lỗ sâu đục, sâu non hoặc chất thải của sâu. Khi lúa ra bông, sâu đục thân có thể làm bông chuyển trắng và nhiều hạt không chắc.
+- **Cách xử lý:** kiểm tra lá và thân để tìm sâu non và **cụm trứng sâu** (nhiều trứng nhỏ bám cùng nhau trên lá). Ở chỗ bị hại nhẹ, có thể thu gom những lá mang trứng hoặc thân bị sâu phá hoại theo hướng dẫn khuyến nông.
+- **Phòng ngừa:** gieo hoặc cấy lúa vào thời điểm tương đối đồng loạt với các ruộng xung quanh. Sau thu hoạch, thu dọn và xử lý phần thân, gốc lúa còn sót lại để hạn chế nơi sâu tồn tại sang vụ sau.
+- **Phân bón:** bón vừa đủ đạm (N), lân (P) và kali (K) theo giai đoạn phát triển; không tăng đạm khi cây đang bị sâu hại.
+- **Thuốc bảo vệ thực vật:** nếu phát hiện sâu đục thân và mức độ gây hại cần xử lý, dùng thuốc trừ sâu được đăng ký đúng đối tượng trên lúa theo hướng dẫn tại địa phương; thuốc trừ nấm không diệt được sâu đục thân.
 - **Nguồn Việt Nam:** [Khuyến nông – Sâu cắn phá lúa làm đòng](https://khuyennongvn.gov.vn/tu-van-hoi-dap/bien-phap-phong-tru-sau-can-pha-lua-giai-doan-lam-dong-9733.html).
 
 ## downy_mildew
