@@ -1,0 +1,127 @@
+{
+  "run_name": "efficientnet_b3_pilot_local_20261029",
+  "pilot": true,
+  "seed": 20261028,
+  "device": "cpu",
+  "gpu": null,
+  "torch": "2.8.0+cu128",
+  "timm": "1.0.20",
+  "opencv": "4.12.0",
+  "numpy": "2.2.6",
+  "safetensors": "0.8.0",
+  "manifest_sha256": "570b0d52ea950dec13de0eed792614b67c039b08b2cc28c8e588bb87b2f61082",
+  "config": {
+    "version": 1,
+    "seed": 20261028,
+    "architecture": "efficientnet_b3.ra2_in1k",
+    "pretrained_source": "https://huggingface.co/timm/efficientnet_b3.ra2_in1k",
+    "pretrained_file": "checkpoints/imagenet_efficientnet_b3_ra2_in1k.safetensors",
+    "pretrained_sha256": "279d2a53898aa89dab43fd6bd7df9f706aea4cb9cf916223988bbcb8e5850469",
+    "input_size": 300,
+    "resize": 343,
+    "interpolation": "INTER_CUBIC",
+    "normalization": "imagenet",
+    "amp": true,
+    "batch_size_cuda": 16,
+    "batch_size_cpu": 2,
+    "num_workers": 4,
+    "head_epochs": 3,
+    "last_stage_epochs": 10,
+    "head_learning_rate": 0.001,
+    "last_stage_learning_rate": 3e-05,
+    "weight_decay": 0.0001,
+    "early_stopping_patience": 3,
+    "loss": "standard",
+    "selection_metric": "validation_macro_f1",
+    "pilot_train_per_class": 32,
+    "pilot_val_per_class": 16
+  },
+  "manifest_counts": {
+    "train": 14978,
+    "val": 3210,
+    "internal_test": 3209
+  },
+  "train_n": 10,
+  "val_n": 5,
+  "train_class_counts": [
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "loss": "standard",
+  "class_weights": null,
+  "batch_size": 2,
+  "amp": false,
+  "schedule": {
+    "head_epochs": 1,
+    "fine_epochs": 0,
+    "fine_stage": "last",
+    "fine_lr": 3e-05,
+    "label_smoothing": 0.0
+  },
+  "pretrained_file_sha256": "279d2a53898aa89dab43fd6bd7df9f706aea4cb9cf916223988bbcb8e5850469",
+  "epochs": [
+    {
+      "epoch": 1,
+      "stage": "head",
+      "train": {
+        "loss": 1.7445948600769043,
+        "accuracy": 0.1,
+        "macro_f1": 0.06666666666666667,
+        "balanced_accuracy": 0.1
+      },
+      "val": {
+        "loss": 1.5988109588623047,
+        "accuracy": 0.2,
+        "macro_f1": 0.08,
+        "balanced_accuracy": 0.2
+      },
+      "elapsed_seconds": 26.04
+    }
+  ],
+  "best_epoch": 1,
+  "best_val_macro_f1": 0.08,
+  "pretrained_cfg": {
+    "url": "https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-weights/efficientnet_b3_ra2-cf984f9c.pth",
+    "hf_hub_id": "timm/efficientnet_b3.ra2_in1k",
+    "architecture": "efficientnet_b3",
+    "tag": "ra2_in1k",
+    "custom_load": false,
+    "input_size": [
+      3,
+      288,
+      288
+    ],
+    "test_input_size": [
+      3,
+      320,
+      320
+    ],
+    "fixed_input_size": false,
+    "interpolation": "bicubic",
+    "crop_pct": 0.875,
+    "test_crop_pct": 1.0,
+    "crop_mode": "center",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "num_classes": 1000,
+    "pool_size": [
+      9,
+      9
+    ],
+    "first_conv": "conv_stem",
+    "classifier": "classifier"
+  },
+  "duration_seconds": 26.13,
+  "best_checkpoint_sha256": "be66172f657e5dc545bfce15ef3dfb466f4936b8eed059ac8364bdc6f0dd1186"
+}

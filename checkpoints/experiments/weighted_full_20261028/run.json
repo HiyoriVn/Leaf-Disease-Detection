@@ -1,0 +1,129 @@
+{
+  "run_name": "weighted_full_20261028",
+  "pilot": false,
+  "seed": 20261028,
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+  "torch": "2.8.0+cu128",
+  "timm": "1.0.20",
+  "manifest_sha256": "570b0d52ea950dec13de0eed792614b67c039b08b2cc28c8e588bb87b2f61082",
+  "config": {
+    "version": 1,
+    "seed": 20261028,
+    "architecture": "mobilenetv3_small_100",
+    "pretrained_source": "https://huggingface.co/timm/mobilenetv3_small_100.lamb_in1k",
+    "pretrained_file": "checkpoints/imagenet_mobilenetv3_small_100.safetensors",
+    "input_size": 224,
+    "resize": 256,
+    "interpolation": "INTER_AREA",
+    "normalization": "imagenet",
+    "batch_size_cuda": 32,
+    "batch_size_cpu": 8,
+    "num_workers": 2,
+    "head_epochs": 6,
+    "last_stage_epochs": 4,
+    "head_learning_rate": 0.001,
+    "last_stage_learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "early_stopping_patience": 3,
+    "loss": "weighted",
+    "selection_metric": "validation_macro_f1",
+    "pilot_train_per_class": 64,
+    "pilot_val_per_class": 32
+  },
+  "manifest_counts": {
+    "train": 14978,
+    "val": 3210,
+    "internal_test": 3209
+  },
+  "train_n": 14978,
+  "val_n": 3210,
+  "train_class_counts": [
+    761,
+    1532,
+    1670,
+    9211,
+    1804
+  ],
+  "loss": "weighted",
+  "class_weights": [
+    3.936399459838867,
+    1.9553524255752563,
+    1.7937724590301514,
+    0.3252198398113251,
+    1.6605321168899536
+  ],
+  "batch_size": 32,
+  "pretrained_file_sha256": "46d2c063b18125884c48937afa4c49e18128869e52e8db96df48bf0a4d7ff697",
+  "epochs": [
+    {
+      "epoch": 1,
+      "stage": "head",
+      "train": {
+        "loss": 1.1322320132536345,
+        "accuracy": 0.616637735345173,
+        "macro_f1": 0.493135891606075,
+        "balanced_accuracy": 0.5475481303896567
+      },
+      "val": {
+        "loss": 1.0631433824141077,
+        "accuracy": 0.6819314641744548,
+        "macro_f1": 0.518724054941264,
+        "balanced_accuracy": 0.5755863838183194
+      },
+      "elapsed_seconds": 356.14
+    },
+    {
+      "epoch": 2,
+      "stage": "head",
+      "train": {
+        "loss": 0.9898271485735345,
+        "accuracy": 0.6790626251836026,
+        "macro_f1": 0.5617135307672434,
+        "balanced_accuracy": 0.6179013903448236
+      },
+      "val": {
+        "loss": 0.9985805222921282,
+        "accuracy": 0.7277258566978193,
+        "macro_f1": 0.5699868513466143,
+        "balanced_accuracy": 0.6096074309043431
+      },
+      "elapsed_seconds": 705.76
+    }
+  ],
+  "best_epoch": 2,
+  "best_val_macro_f1": 0.5699868513466143,
+  "pretrained_cfg": {
+    "url": "https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-weights/mobilenetv3_small_100_lamb-266a294c.pth",
+    "hf_hub_id": "timm/mobilenetv3_small_100.lamb_in1k",
+    "architecture": "mobilenetv3_small_100",
+    "tag": "lamb_in1k",
+    "custom_load": false,
+    "input_size": [
+      3,
+      224,
+      224
+    ],
+    "fixed_input_size": false,
+    "interpolation": "bicubic",
+    "crop_pct": 0.875,
+    "crop_mode": "center",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "num_classes": 1000,
+    "pool_size": [
+      7,
+      7
+    ],
+    "first_conv": "conv_stem",
+    "classifier": "classifier"
+  }
+}

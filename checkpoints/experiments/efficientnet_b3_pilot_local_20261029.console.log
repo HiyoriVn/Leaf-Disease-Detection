@@ -1,0 +1,2 @@
+{"best_epoch": 1, "best_val_macro_f1": 0.08, "best_checkpoint_sha256": "be66172f657e5dc545bfce15ef3dfb466f4936b8eed059ac8364bdc6f0dd1186", "duration_seconds": 0.11}
+{"best_epoch": 1, "best_val_macro_f1": 0.08, "best_checkpoint_sha256": "be66172f657e5dc545bfce15ef3dfb466f4936b8eed059ac8364bdc6f0dd1186", "duration_seconds": 26.13}

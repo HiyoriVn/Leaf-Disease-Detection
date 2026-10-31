@@ -10,7 +10,6 @@ __pycache__/
 .venv-phase2/
 .venv-train/
 .venv-cropnet/
-checkpoints/
 transfer/
 .tmp-phase2/
 .tmp-train/
